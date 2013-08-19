@@ -23,9 +23,9 @@ module DroongaProtocol
   class Client
     def initialize(options={})
       default_options = {
-        :tag     => "kotoumi",
+        :tag     => "droonga",
         :host    => "127.0.0.1",
-        :port    => 23003,
+        :port    => 24224,
         :timeout => 5
       }
       options = default_options.merge(options)
