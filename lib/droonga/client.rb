@@ -19,7 +19,9 @@ require "socket"
 require "msgpack"
 require "fluent-logger"
 
-module DroongaProtocol
+require "droonga/client/version"
+
+module Droonga
   class Client
     def initialize(options={})
       default_options = {
