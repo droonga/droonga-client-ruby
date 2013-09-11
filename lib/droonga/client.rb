@@ -20,77 +20,16 @@ require "msgpack"
 require "fluent-logger"
 
 require "droonga/client/version"
+require "droonga/connection/droonga_protocol"
 
 module Droonga
   class Client
     def initialize(options={})
-      default_options = {
-        :tag     => "droonga",
-        :host    => "127.0.0.1",
-        :port    => 24224,
-        :timeout => 5
-      }
-      options = default_options.merge(options)
-      @logger = Fluent::Logger::FluentLogger.new(options.delete(:tag),
-                                                 options)
-      @timeout = options[:timeout]
+      @connection = Connection::DroongaProtocol.new(options)
     end
 
     def search(body)
-      receiver = Receiver.new
-      begin
-        envelope = {
-          "id"         => Time.now.to_f.to_s,
-          "date"       => Time.now,
-          "replyTo"    => "#{receiver.host}:#{receiver.port}/droonga",
-          "statusCode" => 200,
-          "type"       => "search",
-          "body"       => body,
-        }
-        @logger.post("message", envelope)
-        receiver.receive(:timeout => @timeout)
-      ensure
-        receiver.close
-      end
-    end
-  end
-
-  class Receiver
-    def initialize(options={})
-      default_options = {
-        :host => "0.0.0.0",
-        :port => 0,
-      }
-      options = default_options.merge(options)
-      @socket = TCPServer.new(options[:host], options[:port])
-    end
-
-    def close
-      @socket.close
-    end
-
-    def host
-      @socket.addr[3]
-    end
-
-    def port
-      @socket.addr[1]
-    end
-
-    def receive(options={})
-      if IO.select([@socket], nil, nil, options[:timeout])
-        client = @socket.accept
-        response = nil
-        unpacker = MessagePack::Unpacker.new(client)
-        unpacker.each do |object|
-          response = object
-          break
-        end
-        client.close
-        response
-      else
-        nil
-      end
+      @connection.search(body)
     end
   end
 end
