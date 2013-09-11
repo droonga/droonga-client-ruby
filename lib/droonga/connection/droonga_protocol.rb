@@ -38,7 +38,6 @@ module Droonga
           "statusCode" => 200,
           "type"       => "search",
           "body"       => body,
-          "dataset"    => "Taiyaki"
         }
         send_receive(envelope)
       end
