@@ -32,16 +32,22 @@ module Droonga
       end
 
       def search(body)
+        envelope = {
+          "id"         => Time.now.to_f.to_s,
+          "date"       => Time.now,
+          "statusCode" => 200,
+          "type"       => "search",
+          "body"       => body,
+          "dataset"    => "Taiyaki"
+        }
+        send_receive(envelope)
+      end
+
+      def send_receive(envelope)
         receiver = Receiver.new
         begin
-          envelope = {
-            "id"         => Time.now.to_f.to_s,
-            "date"       => Time.now,
-            "replyTo"    => "#{receiver.host}:#{receiver.port}/droonga",
-            "statusCode" => 200,
-            "type"       => "search",
-            "body"       => body,
-          }
+          envelope = envelope.dup
+          envelope["replyTo"] = "#{receiver.host}:#{receiver.port}/droonga"
           @logger.post("message", envelope)
           receiver.receive(:timeout => @timeout)
         ensure
