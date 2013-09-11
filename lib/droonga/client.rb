@@ -24,6 +24,8 @@ require "droonga/client/connection/droonga_protocol"
 
 module Droonga
   class Client
+    attr_reader :connection
+
     def initialize(options={})
       @connection = Connection::DroongaProtocol.new(options)
     end
