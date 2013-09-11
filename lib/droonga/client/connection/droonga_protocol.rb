@@ -34,11 +34,11 @@ module Droonga
 
         def search(body)
           envelope = {
-          "id"         => Time.now.to_f.to_s,
-          "date"       => Time.now,
-          "statusCode" => 200,
-          "type"       => "search",
-          "body"       => body,
+            "id"         => Time.now.to_f.to_s,
+            "date"       => Time.now,
+            "statusCode" => 200,
+            "type"       => "search",
+            "body"       => body,
           }
           send_receive(envelope)
         end
