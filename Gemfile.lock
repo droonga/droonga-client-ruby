@@ -2,10 +2,12 @@ PATH
   remote: .
   specs:
     droonga-client (0.0.1)
+      msgpack
 
 GEM
   remote: https://rubygems.org/
   specs:
+    msgpack (0.5.5)
     rake (10.1.0)
 
 PLATFORMS
