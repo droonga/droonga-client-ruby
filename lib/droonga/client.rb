@@ -20,7 +20,7 @@ require "msgpack"
 require "fluent-logger"
 
 require "droonga/client/version"
-require "droonga/connection/droonga_protocol"
+require "droonga/client/connection/droonga_protocol"
 
 module Droonga
   class Client
