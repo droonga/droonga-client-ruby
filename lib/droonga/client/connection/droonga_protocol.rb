@@ -56,10 +56,13 @@ module Droonga
         end
 
         class Receiver
+          DEFAULT_HOST = "0.0.0.0"
+          DEFAULT_PORT = 0
+
           def initialize(options={})
             default_options = {
-              :host => "0.0.0.0",
-              :port => 0,
+              :host => DEFAULT_HOST,
+              :port => DEFAULT_PORT,
             }
             options = default_options.merge(options)
             @socket = TCPServer.new(options[:host], options[:port])
