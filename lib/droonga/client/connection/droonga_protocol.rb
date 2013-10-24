@@ -43,6 +43,10 @@ module Droonga
           send_receive(envelope)
         end
 
+        def send(envelope)
+          @logger.post("message", envelope)
+        end
+
         def send_receive(envelope)
           receiver = Receiver.new
           begin
