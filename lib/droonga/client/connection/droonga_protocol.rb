@@ -53,7 +53,7 @@ module Droonga
             envelope = envelope.dup
             envelope["replyTo"] = "#{receiver.host}:#{receiver.port}/droonga"
             @logger.post("message", envelope)
-            receiver.receive(:timeout => @timeout, :wait_for => 1).first
+            receiver.receive(:timeout => @timeout).first
           ensure
             receiver.close
           end
@@ -82,14 +82,12 @@ module Droonga
           end
 
           def receive(options={})
-            waiting_count = options[:wait_for] || 1
             if IO.select([@socket], nil, nil, options[:timeout])
               client = @socket.accept
               messages = []
               unpacker = MessagePack::Unpacker.new(client)
               unpacker.each do |object|
                 messages << object
-                break if messages.size >= waiting_count
               end
               client.close
               messages
