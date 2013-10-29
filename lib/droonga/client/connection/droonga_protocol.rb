@@ -53,7 +53,7 @@ module Droonga
             envelope = envelope.dup
             envelope["replyTo"] = "#{receiver.host}:#{receiver.port}/droonga"
             @logger.post("message", envelope)
-            receiver.receive(:timeout => @timeout).first
+            receiver.receive(:timeout => @timeout)
           ensure
             receiver.close
           end
@@ -84,13 +84,14 @@ module Droonga
           def receive(options={})
             if IO.select([@socket], nil, nil, options[:timeout])
               client = @socket.accept
-              messages = []
+              response = nil
               unpacker = MessagePack::Unpacker.new(client)
               unpacker.each do |object|
-                messages << object
+                response = object
+                break
               end
               client.close
-              messages
+              response
             else
               nil
             end
