@@ -6,7 +6,7 @@ require 'droonga/client/version'
 Gem::Specification.new do |spec|
   spec.name          = "droonga-client"
   spec.version       = Droonga::Client::VERSION
-  spec.authors       = ["droonga project"]
+  spec.authors       = ["Droonga Project"]
   spec.email         = ["droonga@groonga.org"]
   spec.description   = %q{Droonga client for Ruby}
   spec.summary       = %q{Droonga client for Ruby}
