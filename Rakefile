@@ -15,4 +15,21 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-require "bundler/gem_tasks"
+require "bundler/gem_helper"
+require "packnga"
+
+base_dir = File.join(File.dirname(__FILE__))
+
+helper = Bundler::GemHelper.new(base_dir)
+def helper.version_tag
+  version
+end
+
+helper.install
+spec = helper.gemspec
+
+Packnga::DocumentTask.new(spec) do |task|
+  task.original_language = "en"
+  task.translate_languages = ["ja"]
+end
+
