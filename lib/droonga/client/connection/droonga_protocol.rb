@@ -40,22 +40,34 @@ module Droonga
             "type"       => "search",
             "body"       => body,
           }
-          send_receive(envelope)
+          send(envelope, :response => :one)
         end
 
-        def send(envelope)
-          @logger.post("message", envelope)
-        end
-
-        def send_receive(envelope)
-          receiver = Receiver.new
-          begin
-            envelope = envelope.dup
-            envelope["replyTo"] = "#{receiver.host}:#{receiver.port}/droonga"
+        # Sends low level request. Normally, you should use other
+        # convenience methods.
+        #
+        # @param envelope [Hash] Request envelope.
+        # @param options [Hash] The options to send request.
+        # @option options :response [nil, :none, :one] (nil) The response type.
+        #   If you specify `nil`, it is treated as `:one`.
+        # @return The response. TODO: WRITE ME
+        def send(envelope, options={})
+          response_type = options[:response] || :one
+          case response_type
+          when :none
             @logger.post("message", envelope)
-            receiver.receive(:timeout => @timeout)
-          ensure
-            receiver.close
+          when :one
+            receiver = Receiver.new
+            begin
+              envelope = envelope.dup
+              envelope["replyTo"] = "#{receiver.host}:#{receiver.port}/droonga"
+              @logger.post("message", envelope)
+              receiver.receive(:timeout => @timeout)
+            ensure
+              receiver.close
+            end
+          else
+            raise InvalidResponseType.new(response_type)
           end
         end
 
