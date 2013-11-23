@@ -3,4 +3,5 @@
 --markup-provider kramdown
 lib/**/*.rb
 -
+LICENSE.txt
 doc/text/**/*.*
