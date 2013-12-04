@@ -21,14 +21,54 @@ require "droonga/client/connection/droonga_protocol"
 
 module Droonga
   class Client
+    class << self
+      # Opens a new connection and yields a {Client} object to use the
+      # connection. The client is closed after the given block is
+      # finished.
+      #
+      # @param (see #initialize)
+      #
+      # @yield [client] Gives the opened client. It is alive while yielding.
+      # @yieldparam client [Client] The opened client.
+      #
+      # @return The return value from the given block.
+      def open(options={})
+        client = new(options)
+        begin
+          yield(client)
+        ensure
+          client.close
+        end
+      end
+    end
+
     attr_reader :connection
 
+    # Creates a new Droonga Engine client.
+    #
+    # @param options [Hash] Options to connect Droonga Engine.
+    # @option options [String] :tag ("droonga") The tag of the request message.
+    # @option options [String] :host ("127.0.0.1")
+    #   The host name or IP address of the Droonga Engine to be connected.
+    # @option options [Integer] :port (24224)
+    #   The port number of the Droonga Engine to be connected.
+    # @option options [Integer] :timeout (5)
+    #   The timeout value for connecting to, writing to and reading
+    #   from Droonga Engine.
     def initialize(options={})
       @connection = Connection::DroongaProtocol.new(options)
     end
 
     def search(body)
       @connection.search(body)
+    end
+
+    # Close the connection used by the client. You can't send any
+    # request anymore.
+    #
+    # @return [void]
+    def close
+      @connection.close
     end
   end
 end

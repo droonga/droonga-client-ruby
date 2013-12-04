@@ -75,6 +75,13 @@ module Droonga
           end
         end
 
+        # Close the connection. This connection can't be used anymore.
+        #
+        # @return [void]
+        def close
+          @logger.close
+        end
+
         class Receiver
           def initialize(options={})
             default_options = {
