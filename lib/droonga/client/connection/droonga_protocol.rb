@@ -90,8 +90,6 @@ module Droonga
             default_options = {
               :host            => "0.0.0.0",
               :port            => 0,
-              :connect_timeout => 1,
-              :read_timeout    => 0.5,
             }
             options = default_options.merge(options)
             @socket = TCPServer.new(options[:host], options[:port])
