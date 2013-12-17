@@ -16,6 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 require "socket"
+require "thread"
 require "msgpack"
 require "fluent-logger"
 
@@ -23,6 +24,16 @@ module Droonga
   class Client
     module Connection
       class DroongaProtocol
+        class Request
+          def initialize(thread)
+            @thread = thread
+          end
+
+          def wait
+            @thread.join
+          end
+        end
+
         def initialize(options={})
           default_options = {
             :tag             => "droonga",
@@ -38,7 +49,7 @@ module Droonga
           @read_timeout = options[:read_timeout]
         end
 
-        def search(body)
+        def search(body, &block)
           envelope = {
             "id"         => Time.now.to_f.to_s,
             "date"       => Time.now,
@@ -46,7 +57,70 @@ module Droonga
             "type"       => "search",
             "body"       => body,
           }
-          send(envelope, :response => :one)
+          execute(envelope, &block)
+        end
+
+        # Sends a request message and receives one ore more response
+        # messages.
+        #
+        # @overload execute(message, options={})
+        #   Executes the request message synchronously.
+        #
+        #   @param message [Hash] Request message.
+        #   @param options [Hash] The options to executes a request.
+        #      TODO: WRITE ME
+        #
+        #   @return [Object] The response. TODO: WRITE ME
+        #
+        # @overload execute(message, options={}, &block)
+        #   Executes the passed request message asynchronously.
+        #
+        #   @param message [Hash] Request message.
+        #   @param options [Hash] The options to executes a request.
+        #      TODO: WRITE ME
+        #   @yield [response]
+        #      The block is called when response is received.
+        #   @yieldparam [Object] response
+        #      The response.
+        #   @yieldreturn [Boolean]
+        #      true if you want to wait more responses,
+        #      false otherwise.
+        #
+        #   @return [Request] The request object.
+        def execute(message, options={}, &block)
+          receiver = Receiver.new
+          message = message.dup
+          message["replyTo"] = "#{receiver.host}:#{receiver.port}/droonga"
+          send(message, options)
+
+          connect_timeout = options[:connect_timeout] || @connect_timeout
+          read_timeout = options[:read_timeout] || @read_timeout
+          receive_options = {
+            :connect_timeout => connect_timeout,
+            :read_timeout    => read_timeout
+          }
+          sync = block.nil?
+          if sync
+            begin
+              receiver.receive(receive_options)
+            ensure
+              receiver.close
+            end
+          else
+            thread = Thread.new do
+              begin
+                loop do
+                  response = receiver.receive(receive_options)
+                  break if response.nil?
+                  continue_p = yield(response)
+                  break unless continue_p
+                end
+              ensure
+                receiver.close
+              end
+            end
+            Request.new(thread)
+          end
         end
 
         # Sends low level request. Normally, you should use other
@@ -54,28 +128,10 @@ module Droonga
         #
         # @param envelope [Hash] Request envelope.
         # @param options [Hash] The options to send request.
-        # @option options :response [nil, :none, :one] (nil) The response type.
-        #   If you specify `nil`, it is treated as `:one`.
-        # @return The response. TODO: WRITE ME
-        def send(envelope, options={})
-          response_type = options[:response] || :one
-          case response_type
-          when :none
-            @logger.post("message", envelope)
-          when :one
-            receiver = Receiver.new
-            begin
-              envelope = envelope.dup
-              envelope["replyTo"] = "#{receiver.host}:#{receiver.port}/droonga"
-              @logger.post("message", envelope)
-              receiver.receive(:connect_timeout => @connect_timeout,
-                               :read_timeout    => @read_timeout)
-            ensure
-              receiver.close
-            end
-          else
-            raise InvalidResponseType.new(response_type)
-          end
+        #   TODO: WRITE ME
+        # @return [void]
+        def send(envelope, options={}, &block)
+          @logger.post("message", envelope)
         end
 
         # Close the connection. This connection can't be used anymore.
