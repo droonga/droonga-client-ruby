@@ -82,9 +82,6 @@ module Droonga
         #      The block is called when response is received.
         #   @yieldparam [Object] response
         #      The response.
-        #   @yieldreturn [Boolean]
-        #      true if you want to wait more responses,
-        #      false otherwise.
         #
         #   @return [Request] The request object.
         def execute(message, options={}, &block)
@@ -109,12 +106,8 @@ module Droonga
           else
             thread = Thread.new do
               begin
-                loop do
-                  response = receiver.receive(receive_options)
-                  break if response.nil?
-                  continue_p = yield(response)
-                  break unless continue_p
-                end
+                response = receiver.receive(receive_options)
+                yield(response) if response
               ensure
                 receiver.close
               end
