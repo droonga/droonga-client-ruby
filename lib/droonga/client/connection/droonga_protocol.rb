@@ -53,7 +53,6 @@ module Droonga
           message = {
             "id"         => Time.now.to_f.to_s,
             "date"       => Time.now,
-            "statusCode" => 200,
             "type"       => "search",
             "body"       => body,
           }
