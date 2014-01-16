@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2013 Droonga Project
+# Copyright (C) 2013-2014 Droonga Project
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -50,14 +50,14 @@ module Droonga
         end
 
         def search(body, &block)
-          envelope = {
+          message = {
             "id"         => Time.now.to_f.to_s,
             "date"       => Time.now,
             "statusCode" => 200,
             "type"       => "search",
             "body"       => body,
           }
-          execute(envelope, &block)
+          execute(message, &block)
         end
 
         # Sends a request message and receives one ore more response
