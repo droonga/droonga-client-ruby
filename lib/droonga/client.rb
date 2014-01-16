@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2013 Droonga Project
+# Copyright (C) 2013-2014 Droonga Project
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -59,8 +59,18 @@ module Droonga
       @connection = Connection::DroongaProtocol.new(options)
     end
 
-    def search(body)
-      @connection.search(body)
+    def shuttle(message, &block)
+      @connection.shuttle(message, &block)
+    end
+
+    def search(body, &block)
+      shuttle({
+                "id"   => Time.now.to_f.to_s,
+                "date" => Time.now,
+                "type" => "search",
+                "body" => body,
+              },
+              &block)
     end
 
     # Close the connection used by the client. You can't send any

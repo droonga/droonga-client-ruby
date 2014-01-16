@@ -49,33 +49,25 @@ module Droonga
           @read_timeout = options[:read_timeout]
         end
 
-        def search(body, &block)
-          message = {
-            "id"         => Time.now.to_f.to_s,
-            "date"       => Time.now,
-            "type"       => "search",
-            "body"       => body,
-          }
-          execute(message, &block)
-        end
-
-        # Sends a request message and receives one ore more response
+        # Sends a request message and receives one or more response
         # messages.
         #
-        # @overload execute(message, options={})
-        #   Executes the request message synchronously.
+        # @overload shuttle(message, options={})
+        #   Sends the request message and receives one or more
+        #   messages synchronously.
         #
         #   @param message [Hash] Request message.
-        #   @param options [Hash] The options to executes a request.
+        #   @param options [Hash] The options.
         #      TODO: WRITE ME
         #
         #   @return [Object] The response. TODO: WRITE ME
         #
-        # @overload execute(message, options={}, &block)
-        #   Executes the passed request message asynchronously.
+        # @overload shuttle(message, options={}, &block)
+        #   Sends the request message and receives one or more
+        #   response messages asynchronously.
         #
         #   @param message [Hash] Request message.
-        #   @param options [Hash] The options to executes a request.
+        #   @param options [Hash] The options.
         #      TODO: WRITE ME
         #   @yield [response]
         #      The block is called when response is received.
@@ -83,7 +75,7 @@ module Droonga
         #      The response.
         #
         #   @return [Request] The request object.
-        def execute(message, options={}, &block)
+        def shuttle(message, options={}, &block)
           receiver = Receiver.new
           message = message.dup
           message["replyTo"] = "#{receiver.host}:#{receiver.port}/droonga"
