@@ -167,7 +167,6 @@ module Droonga
               break if readable_ios.nil?
               if timeout > 0
                 timeout -= (Time.now - start)
-                timeout /= 2.0
                 timeout = 0 if timeout < 0
               end
               readable_ios.each do |readable_io|
