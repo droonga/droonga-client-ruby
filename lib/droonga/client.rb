@@ -76,6 +76,7 @@ module Droonga
                 "type" => "search",
                 "body" => body,
               },
+              options,
               &block)
     end
 
