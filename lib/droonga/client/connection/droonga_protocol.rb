@@ -41,10 +41,10 @@ module Droonga
             :port    => 24224,
             :timeout => 1,
           }
-          options = default_options.merge(options)
-          @logger = Fluent::Logger::FluentLogger.new(options.delete(:tag),
-                                                     options)
-          @timeout = options[:timeout]
+          @options = default_options.merge(options)
+          @logger = Fluent::Logger::FluentLogger.new(@options.delete(:tag),
+                                                     @options)
+          @timeout = @options[:timeout]
         end
 
         # Sends a request message and receives one or more response
@@ -74,7 +74,7 @@ module Droonga
         #
         #   @return [Request] The request object.
         def reciprocate(message, options={}, &block)
-          receiver = Receiver.new
+          receiver = create_receiver
           message = message.dup
           message["replyTo"] = "#{receiver.host}:#{receiver.port}/droonga"
           send(message, options)
@@ -109,6 +109,11 @@ module Droonga
         end
 
         private
+        def create_receiver
+          Receiver.new(:host => @options[:receiver_host],
+                       :port => @options[:receiver_port])
+        end
+
         def receive(receiver, options)
           timeout = options[:timeout] || @timeout
 
@@ -133,12 +138,9 @@ module Droonga
 
         class Receiver
           def initialize(options={})
-            default_options = {
-              :host            => "0.0.0.0",
-              :port            => 0,
-            }
-            options = default_options.merge(options)
-            @socket = TCPServer.new(options[:host], options[:port])
+            host = options[:host] || Socket.gethostname
+            port = options[:port] || 0
+            @socket = TCPServer.new(host, port)
             @read_ios = [@socket]
             @client_handlers = {}
           end

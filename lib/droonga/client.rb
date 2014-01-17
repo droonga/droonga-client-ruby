@@ -52,6 +52,10 @@ module Droonga
     #   The host name or IP address of the Droonga Engine to be connected.
     # @option options [Integer] :port (24224)
     #   The port number of the Droonga Engine to be connected.
+    # @option options [String] :receiver_host (Socket.gethostname)
+    #   The host name or IP address to receive response from the Droonga Engine.
+    # @option options [Integer] :receiver_port (0)
+    #   The port number to receive response from the Droonga Engine.
     # @option options [Integer] :timeout (5)
     #   The timeout value for connecting to, writing to and reading
     #   from Droonga Engine.
