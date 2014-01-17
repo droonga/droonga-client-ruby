@@ -51,8 +51,7 @@ module Droonga
         # messages.
         #
         # @overload reciprocate(message, options={})
-        #   Sends the request message and receives one or more
-        #   messages synchronously.
+        #   This is synchronously version.
         #
         #   @param message [Hash] Request message.
         #   @param options [Hash] The options.
@@ -61,8 +60,7 @@ module Droonga
         #   @return [Object] The response. TODO: WRITE ME
         #
         # @overload reciprocate(message, options={}, &block)
-        #   Sends the request message and receives one or more
-        #   response messages asynchronously.
+        #   This is asynchronously version.
         #
         #   @param message [Hash] Request message.
         #   @param options [Hash] The options.
