@@ -64,11 +64,11 @@ module Droonga
     end
 
     def request(message, options={}, &block)
-      @connection.request(message, &block)
+      @connection.request(message, options, &block)
     end
 
     def subscribe(message, options={}, &block)
-      @connection.subscribe(message, &block)
+      @connection.subscribe(message, options, &block)
     end
 
     def search(body, options={}, &block)
