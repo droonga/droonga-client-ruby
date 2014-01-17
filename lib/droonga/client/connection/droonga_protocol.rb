@@ -154,6 +154,10 @@ module Droonga
         #   TODO: WRITE ME
         # @return [void]
         def send(message, options={}, &block)
+          if message["id"].nil? or message["date"].nil?
+            message = message.merge("id"   => TIme.now.to_f.to_s,
+                                    "date" => Time.now)
+          end
           @logger.post("message", message)
         end
 

@@ -73,8 +73,6 @@ module Droonga
 
     def search(body, options={}, &block)
       request({
-                "id"   => Time.now.to_f.to_s,
-                "date" => Time.now,
                 "type" => "search",
                 "body" => body,
               },
