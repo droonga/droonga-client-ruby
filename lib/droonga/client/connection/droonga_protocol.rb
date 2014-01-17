@@ -160,12 +160,12 @@ module Droonga
 
           BUFFER_SIZE = 8192
           def receive(options={}, &block)
-            timeout = options[:timeout] || 1
+            timeout = options[:timeout]
             loop do
               start = Time.new
               readable_ios, = IO.select(@read_ios, nil, nil, timeout)
               break if readable_ios.nil?
-              if timeout > 0
+              if timeout
                 timeout -= (Time.now - start)
                 timeout = 0 if timeout < 0
               end
