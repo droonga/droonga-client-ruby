@@ -50,7 +50,7 @@ module Droonga
         # Sends a request message and receives one or more response
         # messages.
         #
-        # @overload shuttle(message, options={})
+        # @overload reciprocate(message, options={})
         #   Sends the request message and receives one or more
         #   messages synchronously.
         #
@@ -60,7 +60,7 @@ module Droonga
         #
         #   @return [Object] The response. TODO: WRITE ME
         #
-        # @overload shuttle(message, options={}, &block)
+        # @overload reciprocate(message, options={}, &block)
         #   Sends the request message and receives one or more
         #   response messages asynchronously.
         #
@@ -73,7 +73,7 @@ module Droonga
         #      The response.
         #
         #   @return [Request] The request object.
-        def shuttle(message, options={}, &block)
+        def reciprocate(message, options={}, &block)
           receiver = Receiver.new
           message = message.dup
           message["replyTo"] = "#{receiver.host}:#{receiver.port}/droonga"

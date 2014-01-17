@@ -59,12 +59,13 @@ module Droonga
       @connection = Connection::DroongaProtocol.new(options)
     end
 
-    def shuttle(message, options={}, &block)
-      @connection.shuttle(message, &block)
+    def reciprocate(message, options={}, &block)
+      @connection.reciprocate(message, &block)
     end
 
+
     def search(body, options={}, &block)
-      shuttle({
+      reciprocate({
                 "id"   => Time.now.to_f.to_s,
                 "date" => Time.now,
                 "type" => "search",
