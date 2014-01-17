@@ -73,12 +73,12 @@ module Droonga
 
     def search(body, options={}, &block)
       request({
-                    "id"   => Time.now.to_f.to_s,
-                    "date" => Time.now,
-                    "type" => "search",
-                    "body" => body,
-                  },
-                  &block)
+                "id"   => Time.now.to_f.to_s,
+                "date" => Time.now,
+                "type" => "search",
+                "body" => body,
+              },
+              &block)
     end
 
     # Close the connection used by the client. You can't send any
