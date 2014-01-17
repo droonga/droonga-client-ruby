@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2013 Droonga Project
+# Copyright (C) 2013-2014 Droonga Project
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -36,6 +36,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "msgpack"
   spec.add_runtime_dependency "fluent-logger"
+  spec.add_runtime_dependency "rack"
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"

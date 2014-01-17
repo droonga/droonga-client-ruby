@@ -17,6 +17,7 @@
 
 require "droonga/client/version"
 require "droonga/client/error"
+require "droonga/client/connection/http"
 require "droonga/client/connection/droonga_protocol"
 
 module Droonga
@@ -60,7 +61,7 @@ module Droonga
     #   The timeout value for connecting to, writing to and reading
     #   from Droonga Engine.
     def initialize(options={})
-      @connection = Connection::DroongaProtocol.new(options)
+      @connection = create_connection(options)
     end
 
     def request(message, options={}, &block)
@@ -86,6 +87,16 @@ module Droonga
     # @return [void]
     def close
       @connection.close
+    end
+
+    private
+    def create_connection(options)
+      case options[:protocol] || :droonga
+      when :http
+        Connection::HTTP.new(options)
+      when :droonga
+        Connection::DroongaProtocol.new(options)
+      end
     end
   end
 end
