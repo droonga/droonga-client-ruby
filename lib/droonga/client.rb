@@ -67,6 +67,9 @@ module Droonga
       @connection.reciprocate(message, &block)
     end
 
+    def subscribe(message, options={}, &block)
+      @connection.subscribe(message, &block)
+    end
 
     def search(body, options={}, &block)
       reciprocate({

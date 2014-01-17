@@ -90,6 +90,64 @@ module Droonga
           end
         end
 
+        # Subscribes something and receives zero or more published
+        # messages.
+        #
+        # @overload subscribe(message, options={})
+        #   This is enumerator version.
+        #
+        #   @param message [Hash] Subscribe message.
+        #   @param options [Hash] The options.
+        #      TODO: WRITE ME
+        #
+        #   @return [Enumerator] You can get a published message by
+        #     #next. You can also use #each to get published messages.
+        #
+        # @overload subscribe(message, options={}, &block)
+        #   This is asynchronously version.
+        #
+        #   @param message [Hash] Subscribe message.
+        #   @param options [Hash] The options.
+        #      TODO: WRITE ME
+        #   @yield [message]
+        #      The block is called when a published message is received.
+        #      The block may be called zero or more times.
+        #   @yieldparam [Object] message
+        #      The published message.
+        #
+        #   @return [Request] The request object.
+        def subscribe(message, options={}, &block)
+          receiver = create_receiver
+          message = message.dup
+          message["from"] = "#{receiver.host}:#{receiver.port}/droonga"
+          send(message, options)
+
+          receive_options = {
+            :timeout => nil,
+          }
+          sync = block.nil?
+          if sync
+            Enumerator.new do |yielder|
+              loop do
+                receiver.receive(receive_options) do |object|
+                  yielder << object
+                end
+              end
+            end
+          else
+            thread = Thread.new do
+              begin
+                loop do
+                  receiver.receive(receive_options, &block)
+                end
+              ensure
+                receiver.close
+              end
+            end
+            Request.new(thread)
+          end
+        end
+
         # Sends low level request. Normally, you should use other
         # convenience methods.
         #
