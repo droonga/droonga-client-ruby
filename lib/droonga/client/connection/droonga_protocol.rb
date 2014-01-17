@@ -50,7 +50,7 @@ module Droonga
         # Sends a request message and receives one or more response
         # messages.
         #
-        # @overload reciprocate(message, options={})
+        # @overload request(message, options={})
         #   This is synchronously version.
         #
         #   @param message [Hash] Request message.
@@ -59,7 +59,7 @@ module Droonga
         #
         #   @return [Object] The response. TODO: WRITE ME
         #
-        # @overload reciprocate(message, options={}, &block)
+        # @overload request(message, options={}, &block)
         #   This is asynchronously version.
         #
         #   @param message [Hash] Request message.
@@ -71,7 +71,7 @@ module Droonga
         #      The response.
         #
         #   @return [Request] The request object.
-        def reciprocate(message, options={}, &block)
+        def request(message, options={}, &block)
           receiver = create_receiver
           message = message.dup
           message["replyTo"] = "#{receiver.host}:#{receiver.port}/droonga"

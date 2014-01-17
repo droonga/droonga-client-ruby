@@ -63,8 +63,8 @@ module Droonga
       @connection = Connection::DroongaProtocol.new(options)
     end
 
-    def reciprocate(message, options={}, &block)
-      @connection.reciprocate(message, &block)
+    def request(message, options={}, &block)
+      @connection.request(message, &block)
     end
 
     def subscribe(message, options={}, &block)
@@ -72,7 +72,7 @@ module Droonga
     end
 
     def search(body, options={}, &block)
-      reciprocate({
+      request({
                     "id"   => Time.now.to_f.to_s,
                     "date" => Time.now,
                     "type" => "search",
