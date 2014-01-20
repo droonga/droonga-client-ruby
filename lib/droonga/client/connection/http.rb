@@ -125,7 +125,8 @@ module Droonga
           http.open_timeout = open_timeout
           http.read_timeout = read_timeout
           http.start do
-            get = Net::HTTP::Get.new(build_path(message), build_headers(message))
+            path = message["path"] || build_path(message)
+            get = Net::HTTP::Get.new(path, build_headers(message))
             http.request(get) do |response|
               yield(response)
             end
