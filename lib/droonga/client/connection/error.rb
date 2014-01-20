@@ -23,16 +23,6 @@ module Droonga
       # The top error class of connection module.
       class Error < Client::Error
       end
-
-      # The error class for invalid response type is specified.
-      class InvalidResponseType < Error
-        attr_reader :type
-        def initialize(type)
-          @type = type
-          super("Unknown response type: <#{@type}>. " +
-                  "Available types: [:none, :one]")
-        end
-      end
     end
   end
 end
