@@ -155,9 +155,7 @@ module Droonga
           body = message["body"] || {}
           method = http_method(message)
           base_path = message["path"] || "/#{type}"
-          if body.empty?
-            base_path
-          elsif method == "GET"
+          if use_query_string?(method, body)
             "#{base_path}?#{Rack::Utils.build_nested_query(body)}"
           else
             base_path
@@ -170,6 +168,13 @@ module Droonga
 
         def http_method(message)
           message["method"] || "GET"
+        end
+
+        USE_QUERY_STRING_HTTP_METHODS = ["GET", "HEAD"]
+        def use_query_string?(http_method, parameters)
+          return false if parameters.empty?
+
+          USE_QUERY_STRING_HTTP_METHODS.include?(http_method)
         end
       end
     end
