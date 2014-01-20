@@ -126,14 +126,15 @@ module Droonga
           http.read_timeout = read_timeout
           http.start do
             request = nil
-            case message["method"]
+            method = http_method(message)
+            case method
             when "POST"
               request = Net::HTTP::Post.new(build_path(message), build_headers(message))
               request.body = JSON.generate(message["body"])
             when "GET"
               request = Net::HTTP::Get.new(build_path(message), build_headers(message))
             else
-              raise ArgumentError.new("Unsupport HTTP Method: #{message["method"]}, " +
+              raise ArgumentError.new("Unsupport HTTP Method: #{method}, " +
                                         "in the message: #{JSON.generate(message)}")
             end
             http.request(request) do |response|
@@ -152,10 +153,11 @@ module Droonga
         def build_path(message)
           type = message["type"]
           body = message["body"] || {}
+          method = http_method(message)
           base_path = message["path"] || "/#{type}"
           if body.empty?
             base_path
-          elsif message["method"] == "GET"
+          elsif method == "GET"
             "#{base_path}?#{Rack::Utils.build_nested_query(body)}"
           else
             base_path
@@ -164,6 +166,10 @@ module Droonga
 
         def build_headers(message)
           message["headers"] || {}
+        end
+
+        def http_method(message)
+          message["method"] || "GET"
         end
       end
     end
