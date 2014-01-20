@@ -18,6 +18,8 @@ require "thread"
 
 require "rack"
 
+require "yajl"
+
 module Droonga
   class Client
     module Connection
@@ -96,8 +98,12 @@ module Droonga
         #   @return [Request] The request object.
         def subscribe(message, options={}, &block)
           thread = Thread.new do
+            json_parser = Yajl::Parser.new
+            json_parser.on_parse_complete = block
             send(message, options.merge(:read_timeout => nil)) do |response|
-              response.read_body(&block)
+              response.read_body do |chunk|
+                json_parser << chunk
+              end
             end
           end
           Request.new(thread)
