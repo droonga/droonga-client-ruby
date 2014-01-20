@@ -20,10 +20,24 @@ require "rack"
 
 require "yajl"
 
+require "droonga/client/connection/error"
+
 module Droonga
   class Client
     module Connection
       class HTTP
+        # The error class for invalid HTTP method case
+        class InvalidHTTPMethodError < Error
+          attr_reader :http_method
+          attr_reader :request_message
+          def initialize(http_method, request_message)
+            @http_method     = http_method
+            @request_message = request_message
+            super("Unsupport HTTP Method: #{@http_method}, " +
+                    "in the message: <#{@request_message.inspect}>")
+          end
+        end
+
         class Request
           def initialize(thread)
             @thread = thread
@@ -153,8 +167,7 @@ module Droonga
             Net::HTTP::Get.new(build_path(message, parameters),
                                http_headers)
           else
-            raise ArgumentError.new("Unsupport HTTP Method: #{http_method}, " +
-                                      "in the message: <#{message.inspect}>")
+            raise InvalidHTTPMethodError.new(http_method, message)
           end
         end
 
