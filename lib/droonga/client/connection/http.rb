@@ -125,9 +125,18 @@ module Droonga
           http.open_timeout = open_timeout
           http.read_timeout = read_timeout
           http.start do
-            # we should support not only GET but POST also...
-            get = Net::HTTP::Get.new(build_path(message), build_headers(message))
-            http.request(get) do |response|
+            request = nil
+            case message["method"]
+            when "POST"
+              request = Net::HTTP::Post.new(build_path(message), build_headers(message))
+              request.body = JSON.generate(message["body"])
+            when "GET"
+              request = Net::HTTP::Get.new(build_path(message), build_headers(message))
+            else
+              raise ArgumentError.new("Unsupport HTTP Method: #{message["method"]}, " +
+                                        "in the message: #{JSON.generate(message)}")
+            end
+            http.request(request) do |response|
               yield(response)
             end
           end
