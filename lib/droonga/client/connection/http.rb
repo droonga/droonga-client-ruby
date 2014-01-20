@@ -157,6 +157,8 @@ module Droonga
             base_path
           elsif message["method"] == "GET"
             "#{base_path}?#{Rack::Utils.build_nested_query(body)}"
+          else
+            base_path
           end
         end
 
