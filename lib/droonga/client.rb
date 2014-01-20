@@ -64,6 +64,10 @@ module Droonga
       @connection = create_connection(options)
     end
 
+    def send(message, options={}, &block)
+      @connection.send(message, options, &block)
+    end
+
     def request(message, options={}, &block)
       @connection.request(message, options, &block)
     end
