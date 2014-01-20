@@ -124,19 +124,8 @@ module Droonga
           read_timeout = options[:read_timeout] if options.key?(:read_timeout)
           http.open_timeout = open_timeout
           http.read_timeout = read_timeout
+          request = build_request(message)
           http.start do
-            request = nil
-            method = http_method(message)
-            case method
-            when "POST"
-              request = Net::HTTP::Post.new(build_path(message), build_headers(message))
-              request.body = JSON.generate(message["body"])
-            when "GET"
-              request = Net::HTTP::Get.new(build_path(message), build_headers(message))
-            else
-              raise ArgumentError.new("Unsupport HTTP Method: #{method}, " +
-                                        "in the message: #{JSON.generate(message)}")
-            end
             http.request(request) do |response|
               yield(response)
             end
@@ -150,6 +139,21 @@ module Droonga
         end
 
         private
+        def build_request(message)
+          request = nil
+          method = http_method(message)
+          case method
+          when "POST"
+            request = Net::HTTP::Post.new(build_path(message), build_headers(message))
+            request.body = JSON.generate(message["body"])
+          when "GET"
+            request = Net::HTTP::Get.new(build_path(message), build_headers(message))
+          else
+            raise ArgumentError.new("Unsupport HTTP Method: #{method}, " +
+                                      "in the message: #{JSON.generate(message)}")
+          end
+        end
+
         def build_path(message)
           type = message["type"]
           body = message["body"] || {}
