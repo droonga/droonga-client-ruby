@@ -140,45 +140,32 @@ module Droonga
 
         private
         def build_request(message)
-          request = nil
-          method = http_method(message)
-          case method
+          http_method = message["method"] || "GET"
+          http_headers = message["headers"] || {}
+          case http_method
           when "POST"
-            request = Net::HTTP::Post.new(build_path(message), build_headers(message))
+            request = Net::HTTP::Post.new(build_path(message, {}),
+                                          http_headers)
             request.body = JSON.generate(message["body"])
+            request
           when "GET"
-            request = Net::HTTP::Get.new(build_path(message), build_headers(message))
+            parameters = message["body"] || {}
+            Net::HTTP::Get.new(build_path(message, parameters),
+                               http_headers)
           else
-            raise ArgumentError.new("Unsupport HTTP Method: #{method}, " +
+            raise ArgumentError.new("Unsupport HTTP Method: #{http_method}, " +
                                       "in the message: #{JSON.generate(message)}")
           end
         end
 
-        def build_path(message)
+        def build_path(message, parameters)
           type = message["type"]
-          body = message["body"] || {}
-          method = http_method(message)
           base_path = message["path"] || "/#{type}"
-          if use_query_string?(method, body)
-            "#{base_path}?#{Rack::Utils.build_nested_query(body)}"
-          else
+          if parameters.empty?
             base_path
+          else
+            "#{base_path}?#{Rack::Utils.build_nested_query(parameters)}"
           end
-        end
-
-        def build_headers(message)
-          message["headers"] || {}
-        end
-
-        def http_method(message)
-          message["method"] || "GET"
-        end
-
-        USE_QUERY_STRING_HTTP_METHODS = ["GET", "HEAD"]
-        def use_query_string?(http_method, parameters)
-          return false if parameters.empty?
-
-          USE_QUERY_STRING_HTTP_METHODS.include?(http_method)
         end
       end
     end
