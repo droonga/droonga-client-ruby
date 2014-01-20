@@ -154,7 +154,7 @@ module Droonga
                                http_headers)
           else
             raise ArgumentError.new("Unsupport HTTP Method: #{http_method}, " +
-                                      "in the message: #{JSON.generate(message)}")
+                                      "in the message: <#{message.inspect}>")
           end
         end
 
