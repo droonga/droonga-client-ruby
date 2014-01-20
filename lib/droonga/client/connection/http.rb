@@ -119,7 +119,7 @@ module Droonga
           http.open_timeout = open_timeout
           http.read_timeout = read_timeout
           http.start do
-            get = Net::HTTP::Get.new(build_path(message), options[:headers])
+            get = Net::HTTP::Get.new(build_path(message), build_headers(message))
             http.request(get) do |response|
               yield(response)
             end
@@ -134,21 +134,18 @@ module Droonga
 
         private
         def build_path(message)
-          type = nil
-          parameters = {}
-          message.each do |key, value|
-            if key == "type"
-              type = value
-            else
-              parameters[key] = value
-            end
-          end
+          type = message["type"]
+          body = message["body"] || {}
           base_path = "/#{type}"
-          if parameters.empty?
+          if body.empty?
             base_path
           else
-            "#{base_path}?#{Rack::Utils.build_nested_query(parameters)}"
+            "#{base_path}?#{Rack::Utils.build_nested_query(body)}"
           end
+        end
+
+        def build_headers(message)
+          message["headers"] || {}
         end
       end
     end
