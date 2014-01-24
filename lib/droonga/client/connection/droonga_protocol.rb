@@ -79,7 +79,15 @@ module Droonga
 
           sync = block.nil?
           if sync
-            receive(receiver, options, &block)
+            responses = []
+            receive(receiver, options) do |response|
+              responses << response
+            end
+            if responses.size > 1
+              responses
+            else
+              responses.first
+            end
           else
             thread = Thread.new do
               receive(receiver, options, &block)
@@ -181,19 +189,8 @@ module Droonga
             :timeout => timeout,
           }
           begin
-            responses = []
             receiver.receive(receive_options) do |response|
-              responses << response
-              if block_given?
-                yield(response)
-              end
-            end
-            unless block_given?
-              if responses.size > 1
-                responses
-              else
-                responses.first
-              end
+              yield(response)
             end
           ensure
             receiver.close
