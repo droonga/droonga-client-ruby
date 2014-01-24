@@ -192,7 +192,7 @@ module Droonga
               if responses.size > 1
                 responses
               else
-                response
+                responses.first
               end
             end
           ensure
