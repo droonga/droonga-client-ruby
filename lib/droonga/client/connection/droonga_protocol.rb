@@ -184,12 +184,16 @@ module Droonga
             responses = []
             receiver.receive(receive_options) do |response|
               responses << response
+              if block_given?
+                yield(response)
+              end
             end
-            response = responses.first
-            if block_given?
-              yield(response)
-            else
-              response
+            unless block_given?
+              if responses.size > 1
+                responses
+              else
+                response
+              end
             end
           ensure
             receiver.close
