@@ -23,7 +23,7 @@ options = {
   :port          => 24224,
   :tag           => "droonga",
   :protocol      => :droonga,
-  :timeout       => 10,
+  :timeout       => 1,
   :receiver_host => "localhost",
   :receiver_port => 0,
 }
