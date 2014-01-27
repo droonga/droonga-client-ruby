@@ -76,5 +76,9 @@ request_json_file = rest.first
 
 client = Droonga::Client.new(options)
 request = JSON.parse(File.read(request_json_file))
-puts(JSON.pretty_generate(client.request(request)))
-
+response = client.request(request)
+begin
+  puts(JSON.pretty_generate(response))
+rescue
+  p(response)
+end
