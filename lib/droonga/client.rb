@@ -76,15 +76,6 @@ module Droonga
       @connection.subscribe(message, options, &block)
     end
 
-    def search(body, options={}, &block)
-      request({
-                "type" => "search",
-                "body" => body,
-              },
-              options,
-              &block)
-    end
-
     # Close the connection used by the client. You can't send any
     # request anymore.
     #
