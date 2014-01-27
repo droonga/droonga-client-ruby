@@ -23,6 +23,7 @@ options = {
   :port          => 24224,
   :tag           => "droonga",
   :protocol      => :droonga,
+  :timeout       => 10,
   :receiver_host => "localhost",
   :receiver_port => 0,
 }
@@ -52,6 +53,13 @@ parser.on("--protocol=PROTOCOL", available_protocols,
           "[#{available_protocols.join('|')}",
           "(#{options[:protocol]})") do |protocol|
   options[:protocol] = protocol
+end
+parser.separator("")
+parser.separator("Timeout:")
+parser.on("--timeout=TIMEOUT", Integer,
+          "Timeout for operations.",
+          "(#{options[:timeout]})") do |timeout|
+  options[:timeout] = timeout
 end
 parser.separator("")
 parser.separator("Droonga protocol:")
