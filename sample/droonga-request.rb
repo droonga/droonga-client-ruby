@@ -83,10 +83,12 @@ end
 request_json_file = rest.first
 
 client = Droonga::Client.new(options)
-request = JSON.parse(File.read(request_json_file))
-response = client.request(request)
-begin
-  puts(JSON.pretty_generate(response))
-rescue
-  p(response)
+request_message = JSON.parse(File.read(request_json_file))
+request = client.request(request_message) do |response|
+  begin
+    puts(JSON.pretty_generate(response))
+  rescue
+    p(response)
+  end
 end
+request.wait
