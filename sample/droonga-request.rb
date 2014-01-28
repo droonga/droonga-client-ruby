@@ -26,6 +26,7 @@ options = {
   :timeout       => 1,
   :receiver_host => "localhost",
   :receiver_port => 0,
+  :report_elapsed_time => true,
 }
 
 parser = OptionParser.new
@@ -73,6 +74,13 @@ parser.on("--receiver-port=PORT", Integer,
           "(#{options[:receiver_port]})") do |port|
   options[:receiver_port] = port
 end
+parser.separator("")
+parser.separator("Report:")
+parser.on("--[no-]report-elapsed-time",
+          "Reports elapsed time.",
+          "(#{options[:report_elapsed_time]})") do |report_elapsed_time|
+  options[:report_elapsed_time] = report_elapsed_time
+end
 *rest = parser.parse!(ARGV)
 
 if rest.size < 1
@@ -84,7 +92,9 @@ request_json_file = rest.first
 
 client = Droonga::Client.new(options)
 request_message = JSON.parse(File.read(request_json_file))
+start = Time.now
 request = client.request(request_message) do |response|
+  puts("Elapsed time: #{Time.now - start}") if options[:report_elapsed_time]
   begin
     puts(JSON.pretty_generate(response))
   rescue
