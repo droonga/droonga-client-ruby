@@ -224,6 +224,7 @@ module Droonga
           BUFFER_SIZE = 8192
           def receive(options={}, &block)
             timeout = options[:timeout]
+            catch do |tag|
             loop do
               start = Time.new
               readable_ios, = IO.select(@read_ios, nil, nil, timeout)
@@ -232,9 +233,16 @@ module Droonga
                 timeout -= (Time.now - start)
                 timeout = 0 if timeout < 0
               end
-              readable_ios.each do |readable_io|
-                on_readable(readable_io, &block)
+                readable_ios.each do |readable_io|
+                on_readable(readable_io) do |object|
+                  begin
+                    yield(object)
+                  rescue LocalJumpError
+                    throw(tag)
+                  end
+                end
               end
+            end
             end
           end
 
