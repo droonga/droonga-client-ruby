@@ -24,6 +24,7 @@ options = {
   :tag                 => "droonga",
   :protocol            => :droonga,
   :timeout             => 1,
+  :exit_on_response    => true,
   :receiver_host       => "localhost",
   :receiver_port       => 0,
   :report_elapsed_time => true,
@@ -61,6 +62,11 @@ parser.on("--timeout=TIMEOUT", Integer,
           "Timeout for operations.",
           "(#{options[:timeout]})") do |timeout|
   options[:timeout] = timeout
+end
+parser.on("--[no-]exit-on-response",
+          "Exit when a response is received.",
+          "(#{options[:exit_on_response]})") do |exit_on_response|
+  options[:exit_on_response] = exit_on_response
 end
 parser.separator("")
 parser.separator("Droonga protocol:")
@@ -100,5 +106,6 @@ request = client.request(request_message) do |response|
   rescue
     p(response)
   end
+  break if options[:exit_on_response]
 end
 request.wait
