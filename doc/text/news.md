@@ -1,5 +1,19 @@
 # News
 
+## 0.1.1: 2014-01-29
+
+### Improvements
+
+  * droonga-protocol: Removed needless `statusCode` parameter from request.
+  * droonga-protocol: Renamed {Droonga::Client#execute} to
+    {Droonga::Client#request}. This is incompatible change.
+  * droonga-protocol: Removed {Droonga::Client#search} because it is
+    not useful.
+  * droonga-protocol: Changed to use `Socket.gethostname` as the
+    default receiver host instead of `0.0.0.0`.
+  * Added {Droonga::Client#subscribe} for PubSub style messaging.
+  * http: Started to support HTTP.
+
 ## 0.1.0: 2013-12-29
 
 ### Improvements
