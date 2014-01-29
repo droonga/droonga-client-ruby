@@ -1,6 +1,6 @@
 # News
 
-## 0.1.1: 2014-01-29 {#0-1-1}
+## 0.1.1: 2014-01-29
 
 ### Improvements
 
@@ -14,7 +14,7 @@
   * Added {Droonga::Client#subscribe} for PubSub style messaging.
   * http: Started to support HTTP.
 
-## 0.1.0: 2013-12-29 {#0-1-0}
+## 0.1.0: 2013-12-29
 
 ### Improvements
 
@@ -23,6 +23,6 @@
   * Supported multiple responses.
   * Supported asynchronous request.
 
-## 0.0.1: 2013-11-29 {#0-0-1}
+## 0.0.1: 2013-11-29
 
 The first release!!!
