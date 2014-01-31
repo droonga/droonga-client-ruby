@@ -254,9 +254,13 @@ module Droonga
               @read_ios << client
               @client_handlers[client] = lambda do
                 unpacker = MessagePack::Unpacker.new
-                data = client.read_nonblock(BUFFER_SIZE)
-                unpacker.feed_each(data) do |object|
-                  yield(object)
+                loop do
+                  readable, = IO.select([client], nil, nil, 0)
+                  break unless readable
+                  data = client.read_nonblock(BUFFER_SIZE)
+                  unpacker.feed_each(data) do |object|
+                    yield(object)
+                  end
                 end
                 client.close
                 @read_ios.delete(client)
