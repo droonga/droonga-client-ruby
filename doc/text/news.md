@@ -1,5 +1,12 @@
 # News
 
+## 0.1.2: 2014-02-09
+
+### Improvements
+
+  * Supported a large response.
+  * Added droonga-request command.
+
 ## 0.1.1: 2014-01-29
 
 ### Improvements
