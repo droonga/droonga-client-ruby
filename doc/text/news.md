@@ -5,7 +5,7 @@
 ### Improvements
 
   * droonga-request: Supported multiple JSONs.
-  * droonga-request: Added --report-request option.
+  * droonga-request: Added `--report-request` option.
 
 ## 0.1.2: 2014-02-09
 
