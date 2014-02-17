@@ -1,5 +1,12 @@
 # News
 
+## 0.1.3: 2014-02-17
+
+### Improvements
+
+  * Supported multiple JSONs.
+  * Added --report-request option.
+
 ## 0.1.2: 2014-02-09
 
 ### Improvements
