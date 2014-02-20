@@ -96,7 +96,7 @@ parser.on("--[no-]report-elapsed-time",
           "(#{options[:report_elapsed_time]})") do |report_elapsed_time|
   options[:report_elapsed_time] = report_elapsed_time
 end
-*rest = parser.parse!(ARGV)
+rest = parser.parse!(ARGV)
 
 request_json_file = rest.first
 
