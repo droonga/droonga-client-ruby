@@ -28,6 +28,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{Droonga client for Ruby}
   spec.homepage      = "https://github.com/droonga/droonga-client-ruby"
   spec.license       = "LGPL-2.1"
+  spec.required_ruby_version = '>= 1.9.3'
 
   spec.files         = `git ls-files`.split($/)
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
