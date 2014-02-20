@@ -96,9 +96,7 @@ parser.on("--[no-]report-elapsed-time",
           "(#{options[:report_elapsed_time]})") do |report_elapsed_time|
   options[:report_elapsed_time] = report_elapsed_time
 end
-rest = parser.parse!(ARGV)
-
-request_json_file = rest.first
+request_json_files = parser.parse!(ARGV)
 
 client = Droonga::Client.new(options)
 json_parser = Yajl::Parser.new
@@ -124,10 +122,12 @@ json_parser.on_parse_complete = lambda do |request_message|
   request.wait
 end
 
-if request_json_file
-  File.open(request_json_file) do |input|
-    json_parser.parse(input)
-  end
-else
+if request_json_files.empty?
   json_parser.parse($stdin)
+else
+  request_json_files.each do |request_json_file|
+    File.open(request_json_file) do |input|
+      json_parser.parse(input)
+    end
+  end
 end
