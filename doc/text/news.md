@@ -1,5 +1,11 @@
 # News
 
+## 0.1.4: 2014-02-28
+
+### Improvements
+
+  * droonga-request: Supported multiple input files.
+
 ## 0.1.3: 2014-02-17
 
 ### Improvements
