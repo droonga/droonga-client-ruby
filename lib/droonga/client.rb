@@ -43,8 +43,6 @@ module Droonga
       end
     end
 
-    attr_reader :connection
-
     # Creates a new Droonga Engine client.
     #
     # @param options [Hash] Options to connect Droonga Engine.
