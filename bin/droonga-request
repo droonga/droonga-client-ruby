@@ -56,7 +56,7 @@ end
 available_protocols = [:droonga, :http]
 parser.on("--protocol=PROTOCOL", available_protocols,
           "Protocol to be used to communicate with Droonga system.",
-          "[#{available_protocols.join('|')}",
+          "[#{available_protocols.join('|')}]",
           "(#{options[:protocol]})") do |protocol|
   options[:protocol] = protocol
 end
