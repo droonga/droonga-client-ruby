@@ -18,7 +18,7 @@
 require "droonga/client/version"
 require "droonga/client/error"
 require "droonga/client/connection/http"
-require "droonga/client/connection/droonga_protocol"
+require "droonga/client/connection/droonga-protocol"
 
 module Droonga
   class Client
