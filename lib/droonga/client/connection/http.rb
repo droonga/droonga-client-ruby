@@ -26,7 +26,6 @@ module Droonga
   class Client
     module Connection
       class HTTP
-        # The error class for invalid HTTP method case
         class InvalidHTTPMethodError < Error
           attr_reader :http_method
           attr_reader :request_message
