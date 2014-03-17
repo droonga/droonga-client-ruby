@@ -102,21 +102,28 @@ client = Droonga::Client.new(options)
 json_parser = Yajl::Parser.new
 json_parser.on_parse_complete = lambda do |request_message|
   if options[:report_request]
-    print("Request: ")
+    message = "Request: "
     begin
-      puts(JSON.pretty_generate(request_message))
+      message << JSON.pretty_generate(request_message)
     rescue
-      p(request_message)
+      message << request_message.inspect
     end
+    message << "\n"
+    print(message)
   end
   start = Time.now
   request = client.request(request_message) do |response|
-    puts("Elapsed time: #{Time.now - start}") if options[:report_elapsed_time]
-    begin
-      puts(JSON.pretty_generate(response))
-    rescue
-      p(response)
+    message = ""
+    if options[:report_elapsed_time]
+      message << "Elapsed time: #{Time.now - start}\n"
     end
+    begin
+      message << JSON.pretty_generate(response)
+    rescue
+      message << response.inspect
+    end
+    message << "\n"
+    print(message)
     break if options[:exit_on_response]
   end
   request.wait
