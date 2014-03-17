@@ -33,7 +33,7 @@ module Droonga
           def initialize(http_method, request_message)
             @http_method     = http_method
             @request_message = request_message
-            super("Unsupport HTTP Method: <#{@http_method}>: " +
+            super("Invalid HTTP Method: <#{@http_method}>: " +
                     "<#{@request_message.inspect}>")
           end
         end
