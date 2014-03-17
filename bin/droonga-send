@@ -1,0 +1,84 @@
+#!/usr/bin/env ruby
+#
+# Copyright (C) 2014 Droonga Project
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License version 2.1 as published by the Free Software Foundation.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+require "optparse"
+require "yajl"
+require "json"
+
+require "droonga/client"
+
+options = {
+  :host                => "localhost",
+  :port                => 24224,
+  :tag                 => "droonga",
+  :protocol            => :droonga,
+  :report_request      => false,
+}
+
+parser = OptionParser.new
+parser.banner += " REQUEST_JSON_FILE1 REQUEST_JSON_FILE2 ..."
+parser.separator("")
+parser.separator("Connect:")
+parser.on("--host=HOST",
+          "Host name to be connected.",
+          "(#{options[:host]})") do |host|
+  options[:host] = host
+end
+parser.on("--port=PORT", Integer,
+          "Port number to be connected.",
+          "(#{options[:port]})") do |port|
+  options[:port] = port
+end
+parser.on("--tag=TAG",
+          "Tag name to be used to communicate with Droonga system.",
+          "(#{options[:tag]})") do |tag|
+  options[:tag] = tag
+end
+parser.separator("")
+parser.separator("Report:")
+parser.on("--[no-]report-request",
+          "Reports request message.",
+          "(#{options[:report_request]})") do |report_request|
+  options[:report_request] = report_request
+end
+request_json_files = parser.parse!(ARGV)
+
+client = Droonga::Client.new(options)
+json_parser = Yajl::Parser.new
+json_parser.on_parse_complete = lambda do |request_message|
+  if options[:report_request]
+    message = "Request: "
+    begin
+      message << JSON.pretty_generate(request_message)
+    rescue
+      message << request_message.inspect
+    end
+    message << "\n"
+    print(message)
+  end
+  client.send(request_message)
+end
+
+if request_json_files.empty?
+  json_parser.parse($stdin)
+else
+  request_json_files.each do |request_json_file|
+    File.open(request_json_file) do |input|
+      json_parser.parse(input)
+    end
+  end
+end
