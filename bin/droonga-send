@@ -22,7 +22,7 @@ require "json"
 require "droonga/client"
 
 options = {
-  :report_request      => false,
+  :report_request => false,
 }
 
 servers = []
