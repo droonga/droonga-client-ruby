@@ -67,8 +67,8 @@ request_json_files = parser.parse!(ARGV)
 
 servers << default_server if servers.empty?
 clients = servers.collect do |server|
-  options = parse_server(server)
-  client = Droonga::Client.new(options)
+  client_options = parse_server(server)
+  client = Droonga::Client.new(client_options)
   Droonga::Client::RateLimiter.new(client, messages_per_second)
 end
 
