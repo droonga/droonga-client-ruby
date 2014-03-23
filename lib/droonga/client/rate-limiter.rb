@@ -21,6 +21,7 @@ module Droonga
       def initialize(client, messages_per_second)
         @client = client
         @messages_per_second = messages_per_second
+        @diff_in_seconds_per_message = 1.0 / @messages_per_second
       end
 
       def send(*args, &block)
@@ -41,22 +42,15 @@ module Droonga
       def limit
         return yield if @messages_per_second == NO_LIMIT
 
-        if @current.to_i != Time.now.to_i
-          reset_counter
+        @previous_time ||= Time.now
+        diff_in_seconds = Time.now - @previous_time
+        sleep_time = @diff_in_seconds_per_message - diff_in_seconds
+        if sleep_time > 0
+          sleep(sleep_time)
         end
-
-        @n_sent_messages_in_second += 1
-        if @n_sent_messages_in_second > @messages_per_second
-          sleep(Time.at(@current.to_i + 1) - @current)
-          reset_counter
-        end
+        @previous_time = Time.now
 
         yield
-      end
-
-      def reset_counter
-        @current = Time.now
-        @n_sent_messages_in_second = 0
       end
     end
   end
