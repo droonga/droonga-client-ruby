@@ -15,15 +15,15 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+require "ostruct"
 require "optparse"
 require "yajl"
 require "json"
 
 require "droonga/client"
 
-options = {
-  :report_request => false,
-}
+options = OpenStruct.new
+options.report_request = false
 
 servers = []
 default_server = "droonga:localhost:24224/droonga"
@@ -61,7 +61,7 @@ parser.separator("Report:")
 parser.on("--[no-]report-request",
           "Reports request message.",
           "(#{options[:report_request]})") do |report_request|
-  options[:report_request] = report_request
+  options.report_request = report_request
 end
 request_json_files = parser.parse!(ARGV)
 
@@ -75,7 +75,7 @@ end
 client_index = 0
 json_parser = Yajl::Parser.new
 json_parser.on_parse_complete = lambda do |request_message|
-  if options[:report_request]
+  if options.report_request
     message = "Request: "
     begin
       message << JSON.pretty_generate(request_message)
