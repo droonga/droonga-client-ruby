@@ -19,6 +19,7 @@ require "droonga/client/version"
 require "droonga/client/error"
 require "droonga/client/connection/http"
 require "droonga/client/connection/droonga-protocol"
+require "droonga/client/rate-limiter"
 
 module Droonga
   class Client
