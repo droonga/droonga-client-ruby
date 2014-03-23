@@ -24,6 +24,7 @@ require "droonga/client"
 
 options = OpenStruct.new
 options.report_request = false
+options.report_throughput = false
 
 servers = []
 default_server = "droonga:localhost:24224/droonga"
@@ -37,6 +38,37 @@ def parse_server(server)
     :port     => Integer(port),
     :protocol => protocol.to_sym,
   }
+end
+
+class ThroughputReporter
+  def initialize
+    @start_time = Time.now
+    @measure_start_time = Time.now
+    @n_sent_messages = 0
+    @first_report = true
+  end
+
+  def on_message_sent
+    @n_sent_messages += 1
+    current_time = Time.now
+    measure_span_in_second = current_time - @measure_start_time
+    if measure_span_in_second > 1
+      messages_per_second = @n_sent_messages / measure_span_in_second
+      if @first_report
+        @first_report = false
+      else
+        move_to_previous_line
+      end
+      print("% 8.3f messages/second\n" % messages_per_second)
+      @n_sent_messages = 0
+      @measure_start_time = current_time
+    end
+  end
+
+  private
+  def move_to_previous_line
+    print("\e[1A\r")
+  end
 end
 
 parser = OptionParser.new
@@ -63,6 +95,11 @@ parser.on("--[no-]report-request",
           "(#{options[:report_request]})") do |report_request|
   options.report_request = report_request
 end
+parser.on("--report-throughput",
+          "Reports throughput by messages per second.",
+          "(no)") do
+  options.report_throughput = true
+end
 request_json_files = parser.parse!(ARGV)
 
 servers << default_server if servers.empty?
@@ -70,6 +107,10 @@ clients = servers.collect do |server|
   client_options = parse_server(server)
   client = Droonga::Client.new(client_options)
   Droonga::Client::RateLimiter.new(client, messages_per_second)
+end
+
+if options.report_throughput
+  throughput_reporter = ThroughputReporter.new
 end
 
 client_index = 0
@@ -88,6 +129,7 @@ json_parser.on_parse_complete = lambda do |request_message|
   client = clients[client_index]
   client.send(request_message)
   client_index = (client_index + 1) % clients.size
+  throughput_reporter.on_message_sent if throughput_reporter
 end
 
 if request_json_files.empty?
