@@ -27,6 +27,7 @@ options = {
 
 servers = []
 default_server = "droonga:localhost:24224/droonga"
+messages_per_second = Droonga::Client::RateLimiter::NO_LIMIT
 
 def parse_server(server)
   connect_info, tag = server.split(/\//, 2)
@@ -41,13 +42,19 @@ end
 parser = OptionParser.new
 parser.banner += " REQUEST_JSON_FILE1 REQUEST_JSON_FILE2 ..."
 parser.separator("")
-parser.separator("Connect:")
+parser.separator("Connection:")
 parser.on("--server=PROTOCOL:HOST:PORT/TAG",
           "Droonga server to be connected.",
           "Use multiple servers to use round-robin requests.",
           "Specify this option multiple times to use multiple servers.",
           "(#{default_server})") do |server|
   servers << server
+end
+parser.on("--messages-per-second=N", Integer,
+          "Apply rate limitation by N messages/second.",
+          "'#{Droonga::Client::RateLimiter::NO_LIMIT}' means no limit.",
+          "(#{messages_per_second})") do |n|
+  messages_per_second = n
 end
 parser.separator("")
 parser.separator("Report:")
@@ -61,7 +68,8 @@ request_json_files = parser.parse!(ARGV)
 servers << default_server if servers.empty?
 clients = servers.collect do |server|
   options = parse_server(server)
-  Droonga::Client.new(options)
+  client = Droonga::Client.new(options)
+  Droonga::Client::RateLimiter.new(client, messages_per_second)
 end
 
 client_index = 0
