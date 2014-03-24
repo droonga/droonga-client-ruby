@@ -1,5 +1,12 @@
 # News
 
+## 0.1.5: 2014-03-29 (planned)
+
+### Improvements
+
+  * droonga-request: Reported results correctly event if there were multiple threads.
+  * Added a new command `droonga-send` just for sending requests and ignoring responses.
+
 ## 0.1.4: 2014-02-28
 
 ### Improvements
