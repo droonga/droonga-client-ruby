@@ -92,7 +92,7 @@ parser.separator("")
 parser.separator("Report:")
 parser.on("--[no-]report-request",
           "Reports request message.",
-          "(#{options[:report_request]})") do |report_request|
+          "(#{options.report_request})") do |report_request|
   options.report_request = report_request
 end
 parser.on("--report-throughput",
