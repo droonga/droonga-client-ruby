@@ -197,8 +197,9 @@ module Droonga
                     readable, = IO.select([client], nil, nil, 0)
                     break unless readable
                     data = client.read_nonblock(BUFFER_SIZE)
-                    unpacker.feed_each(data) do |object|
-                      yield(object)
+                    unpacker.feed_each(data) do |fluent_message|
+                      tag, time, droonga_message = fluent_message
+                      yield(droonga_message)
                     end
                   end
                   client.close

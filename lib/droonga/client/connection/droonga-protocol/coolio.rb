@@ -117,7 +117,7 @@ module Droonga
                   request = @requests[id]
                   next if request.nil?
                   request[:received] = true
-                  request[:callback].call(fluent_message)
+                  request[:callback].call(droonga_message)
                 end
               end
               engine.on_read do |data|
@@ -163,9 +163,9 @@ module Droonga
                 response = _response
               end
             end
-            @receiver.register(id) do
+            @receiver.register(id) do |response|
               @receiver.unregister(id)
-              block.call
+              block.call(response)
             end
             request = Request.new(@receiver, id, @loop)
             if sync
