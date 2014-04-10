@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2013 Droonga Project
+# Copyright (C) 2014 Droonga Project
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -15,22 +13,14 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-require "droonga/client/error"
-
 module Droonga
   class Client
     module Connection
-      # The top error class of connection module.
-      class Error < Client::Error
-      end
+      class EmptyRequest
+        def initialize
+        end
 
-      class UnknownBackendError < Error
-        attr_reader :protocol
-        attr_reader :backend
-        def initialize(protocol, backend, detail)
-          @protocol = protocol
-          @backend = backend
-          super("Unknown #{@protocol} backend: <#{backend}>: #{detail}")
+        def wait
         end
       end
     end

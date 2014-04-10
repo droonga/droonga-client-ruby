@@ -15,36 +15,18 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-require "socket"
-require "thread"
-require "msgpack"
-require "fluent-logger"
+require "droonga/client/connection/error"
 
 module Droonga
   class Client
     module Connection
       class DroongaProtocol
-        class Request
-          def initialize(thread)
-            @thread = thread
-          end
-
-          def wait
-            @thread.join
-          end
-        end
-
         def initialize(options={})
-          default_options = {
-            :tag     => "droonga",
-            :host    => "127.0.0.1",
-            :port    => 24224,
-            :timeout => 1,
-          }
-          @options = default_options.merge(options)
-          @logger = Fluent::Logger::FluentLogger.new(@options.delete(:tag),
-                                                     @options)
-          @timeout = @options[:timeout]
+          @host = options[:host] || "127.0.0.1"
+          @port = options[:port] || 24224
+          @tag = options[:tag] || "droonga"
+          @options = options
+          @backend = create_backend
         end
 
         # Sends a request message and receives one or more response
@@ -72,28 +54,7 @@ module Droonga
         #
         #   @return [Request] The request object.
         def request(message, options={}, &block)
-          receiver = create_receiver
-          message = message.dup
-          message["replyTo"] = "#{receiver.host}:#{receiver.port}/droonga"
-          send(message, options)
-
-          sync = block.nil?
-          if sync
-            responses = []
-            receive(receiver, options) do |response|
-              responses << response
-            end
-            if responses.size > 1
-              responses
-            else
-              responses.first
-            end
-          else
-            thread = Thread.new do
-              receive(receiver, options, &block)
-            end
-            Request.new(thread)
-          end
+          @backend.request(message, options, &block)
         end
 
         # Subscribes something and receives zero or more published
@@ -123,35 +84,7 @@ module Droonga
         #
         #   @return [Request] The request object.
         def subscribe(message, options={}, &block)
-          receiver = create_receiver
-          message = message.dup
-          message["from"] = "#{receiver.host}:#{receiver.port}/droonga"
-          send(message, options)
-
-          receive_options = {
-            :timeout => nil,
-          }
-          sync = block.nil?
-          if sync
-            Enumerator.new do |yielder|
-              loop do
-                receiver.receive(receive_options) do |object|
-                  yielder << object
-                end
-              end
-            end
-          else
-            thread = Thread.new do
-              begin
-                loop do
-                  receiver.receive(receive_options, &block)
-                end
-              ensure
-                receiver.close
-              end
-            end
-            Request.new(thread)
-          end
+          @backend.subscribe(message, options, &block)
         end
 
         # Sends low level request. Normally, you should use other
@@ -162,114 +95,31 @@ module Droonga
         #   TODO: WRITE ME
         # @return [void]
         def send(message, options={}, &block)
-          if message["id"].nil? or message["date"].nil?
-            message = message.merge("id"   => Time.now.to_f.to_s,
-                                    "date" => Time.now)
-          end
-          @logger.post("message", message)
+          @backend.send(message, options, &block)
         end
 
         # Close the connection. This connection can't be used anymore.
         #
         # @return [void]
         def close
-          @logger.close
+          @backend.close
         end
 
         private
-        def create_receiver
-          Receiver.new(:host => @options[:receiver_host],
-                       :port => @options[:receiver_port])
-        end
+        def create_backend
+          backend = @options[:backend] || :thread
 
-        def receive(receiver, options)
-          timeout = options[:timeout] || @timeout
-
-          receive_options = {
-            :timeout => timeout,
-          }
           begin
-            receiver.receive(receive_options) do |response|
-              yield(response)
-            end
-          ensure
-            receiver.close
-          end
-        end
-
-        class Receiver
-          def initialize(options={})
-            host = options[:host] || Socket.gethostname
-            port = options[:port] || 0
-            @socket = TCPServer.new(host, port)
-            @read_ios = [@socket]
-            @client_handlers = {}
+            require "droonga/client/connection/droonga-protocol/#{backend}"
+          rescue LoadError
+            raise UnknownBackendError.new("Droonga protocol",
+                                          backend,
+                                          $!.message)
           end
 
-          def close
-            @socket.close
-            @client_handlers.each_key do |client|
-              client.close
-            end
-          end
-
-          def host
-            @socket.addr[3]
-          end
-
-          def port
-            @socket.addr[1]
-          end
-
-          BUFFER_SIZE = 8192
-          def receive(options={}, &block)
-            timeout = options[:timeout]
-            catch do |tag|
-              loop do
-                start = Time.new
-                readable_ios, = IO.select(@read_ios, nil, nil, timeout)
-                break if readable_ios.nil?
-                if timeout
-                  timeout -= (Time.now - start)
-                  timeout = 0 if timeout < 0
-                end
-                readable_ios.each do |readable_io|
-                  on_readable(readable_io) do |object|
-                    begin
-                      yield(object)
-                    rescue LocalJumpError
-                      throw(tag)
-                    end
-                  end
-                end
-              end
-            end
-          end
-
-          private
-          def on_readable(io)
-            case io
-            when @socket
-              client = @socket.accept
-              @read_ios << client
-              @client_handlers[client] = lambda do
-                unpacker = MessagePack::Unpacker.new
-                loop do
-                  readable, = IO.select([client], nil, nil, 0)
-                  break unless readable
-                  data = client.read_nonblock(BUFFER_SIZE)
-                  unpacker.feed_each(data) do |object|
-                    yield(object)
-                  end
-                end
-                client.close
-                @read_ios.delete(client)
-                @client_handlers.delete(client)
-              end
-            else
-              @client_handlers[io].call
-            end
-          end
+          backend_name = backend.to_s.capitalize
+          backend_class = self.class.const_get(backend_name)
+          backend_class.new(@host, @port, @tag, @options)
         end
       end
     end
