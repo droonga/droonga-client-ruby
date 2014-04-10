@@ -39,6 +39,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "fluent-logger"
   spec.add_runtime_dependency "rack"
   spec.add_runtime_dependency "yajl-ruby"
+  spec.add_runtime_dependency "droonga-message-pack-packer"
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
