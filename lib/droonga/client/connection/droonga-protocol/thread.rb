@@ -41,8 +41,7 @@ module Droonga
               :timeout => 1,
             }
             @options = default_options.merge(options)
-            @logger = Fluent::Logger::FluentLogger.new(@options.delete(:tag),
-                                                       @options)
+            @logger = Fluent::Logger::FluentLogger.new(@tag, @options)
             @timeout = @options[:timeout]
           end
 
