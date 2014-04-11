@@ -37,6 +37,7 @@ def parse_server(server)
     :host     => host,
     :port     => Integer(port),
     :protocol => protocol.to_sym,
+    :tag      => tag,
   }
 end
 
