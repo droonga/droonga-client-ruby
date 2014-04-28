@@ -1,6 +1,6 @@
 # News
 
-## 0.1.6: 2014-04-29 (planned)
+## 0.1.6: 2014-04-29
 
  * Supports droonga's protocol.
 
