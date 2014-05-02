@@ -72,8 +72,10 @@ module Droonga
 
           def subscribe(message, options={}, &block)
             receiver = create_receiver
+            receive_end_point = "#{receiver.host}:#{receiver.port}/droonga"
             message = message.dup
-            message["from"] = "#{receiver.host}:#{receiver.port}/droonga"
+            message["replyTo"] = receive_end_point
+            message["from"] = receive_end_point
             send(message, options)
 
             receive_options = {

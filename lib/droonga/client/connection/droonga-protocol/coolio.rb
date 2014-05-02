@@ -179,6 +179,7 @@ module Droonga
           def subscribe(message, options={}, &block)
             id = message["id"] || generate_id
             message = message.merge("id" => id,
+                                    "replyTo" => @receiver.droonga_name,
                                     "from" => @receiver.droonga_name)
             send(message, options)
 
