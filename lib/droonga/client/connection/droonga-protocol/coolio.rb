@@ -84,10 +84,10 @@ module Droonga
 
             def close
               super
-              @engines.each do |engine|
+              engines = @engines.dup
+              engines.each do |engine|
                 engine.close
               end
-              @engines.clear
             end
 
             def host
