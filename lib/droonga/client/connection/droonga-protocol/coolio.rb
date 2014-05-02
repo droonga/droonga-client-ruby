@@ -50,23 +50,36 @@ module Droonga
             def initialize(*args)
               super
               @connected = false
+              @failed_to_connect = false
               @buffer = []
             end
 
-            def send(tag, data)
+            def send(tag, data, &on_error)
+              if @failed_to_connect
+                on_error.call(data)
+              end
               fluent_message = [tag, Time.now.to_i, data]
               packed_fluent_message = MessagePackPacker.pack(fluent_message)
               if @connected
                 write(packed_fluent_message)
               else
-                @buffer << packed_fluent_message
+                @buffer << [packed_fluent_message, on_error]
               end
             end
 
             def on_connect
               @connected = true
-              @buffer.each do |message|
-                write(message)
+              @buffer.each do |packed_message,|
+                write(packed_message)
+              end
+              @buffer.clear
+            end
+
+            def on_connect_failed
+              @failed_to_connect = true
+              @buffer.each do |packed_message, on_error|
+                _, _, message = MessagePack.unpack(packed_message)
+                on_error.call(message)
               end
               @buffer.clear
             end
@@ -168,7 +181,9 @@ module Droonga
             id = message["id"] || generate_id
             message = message.merge("id" => id,
                                     "replyTo" => @receiver.droonga_name)
-            send(message, options)
+            send(message, options) do |error|
+              yield(error)
+            end
 
             sync = block.nil?
             if sync
@@ -195,7 +210,9 @@ module Droonga
             message = message.merge("id" => id,
                                     "replyTo" => @receiver.droonga_name,
                                     "from" => @receiver.droonga_name)
-            send(message, options)
+            send(message, options) do |error|
+              yield(error)
+            end
 
             request = InfiniteRequest.new(@loop)
             sync = block.nil?
@@ -228,7 +245,13 @@ module Droonga
               date = message["date"] || Time.now
               message = message.merge("id" => id, "date" => date)
             end
-            @sender.send("#{@tag}.message", message)
+            @sender.send("#{@tag}.message", message) do
+              host = @sender.peeraddr[3]
+              port = @sender.peeraddr[1]
+              detail = message
+              error = ConnectionError.new(host, port, detail)
+              yield(error)
+            end
           end
 
           def close

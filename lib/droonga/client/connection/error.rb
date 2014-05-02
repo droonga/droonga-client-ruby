@@ -33,6 +33,18 @@ module Droonga
           super("Unknown #{@protocol} backend: <#{backend}>: #{detail}")
         end
       end
+
+      class ConnectionError < Error
+        attr_reader :host
+        attr_reader :port
+        attr_reader :detail
+        def initialize(host, port, detail)
+          @host = host
+          @port = port
+          @detail = detail
+          super("Failed to connect: <#{@host}:#{@port}>: #{@detail}")
+        end
+      end
     end
   end
 end
