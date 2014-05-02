@@ -47,14 +47,28 @@ module Droonga
           end
 
           class Sender < ::Coolio::TCPSocket
-            def initialize(socket)
-              super(socket)
+            def initialize(*args)
+              super
+              @connected = false
+              @buffer = []
             end
 
             def send(tag, data)
               fluent_message = [tag, Time.now.to_i, data]
               packed_fluent_message = MessagePackPacker.pack(fluent_message)
-              write(packed_fluent_message)
+              if @connected
+                write(packed_fluent_message)
+              else
+                @buffer << packed_fluent_message
+              end
+            end
+
+            def on_connect
+              @connected = true
+              @buffer.each do |message|
+                write(message)
+              end
+              @buffer.clear
             end
           end
 
