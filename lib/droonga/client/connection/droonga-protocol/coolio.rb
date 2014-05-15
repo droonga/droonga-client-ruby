@@ -54,6 +54,11 @@ module Droonga
               @buffer = []
             end
 
+            def close
+              return if @failed_to_connect
+              super
+            end
+
             def send(tag, data, &on_error)
               if @failed_to_connect
                 on_error.call(data)
