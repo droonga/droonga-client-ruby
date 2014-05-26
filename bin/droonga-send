@@ -27,7 +27,7 @@ options.report_request = false
 options.report_throughput = false
 
 servers = []
-default_server = "droonga:localhost:24224/droonga"
+default_server = "droonga:localhost:10031/droonga"
 messages_per_second = Droonga::Client::RateLimiter::NO_LIMIT
 
 def parse_server(server)

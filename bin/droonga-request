@@ -23,7 +23,7 @@ require "droonga/client"
 
 options = {
   :host                => "localhost",
-  :port                => 24224,
+  :port                => 10031,
   :tag                 => "droonga",
   :protocol            => :droonga,
   :timeout             => 1,
