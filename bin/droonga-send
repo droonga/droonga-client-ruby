@@ -21,7 +21,6 @@ require "yajl"
 require "json"
 
 require "droonga/client"
-require "droonga/client/version"
 
 options = OpenStruct.new
 options.report_request = false

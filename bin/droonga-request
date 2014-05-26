@@ -20,7 +20,6 @@ require "yajl"
 require "json"
 
 require "droonga/client"
-require "droonga/client/version"
 
 options = {
   :host                => "localhost",
