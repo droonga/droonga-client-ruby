@@ -1,8 +1,13 @@
 # News
 
+## 0.1.7: 2014-06-29 (planned)
+
+ * Updated the default port number, same to `droonga-engine`'s one.
+
 ## 0.1.6: 2014-04-29
 
  * Supports Droonga's protocol.
+ * Used "Cool.io" backend for Droonga protocol.
 
 ## 0.1.5: 2014-03-29
 
