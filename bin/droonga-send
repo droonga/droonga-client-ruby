@@ -21,6 +21,7 @@ require "yajl"
 require "json"
 
 require "droonga/client"
+require "droonga/client/version"
 
 options = OpenStruct.new
 options.report_request = false
@@ -73,6 +74,7 @@ class ThroughputReporter
 end
 
 parser = OptionParser.new
+parser.version = Droonga::Client::VERSION
 parser.banner += " REQUEST_JSON_FILE1 REQUEST_JSON_FILE2 ..."
 parser.separator("")
 parser.separator("Connection:")
