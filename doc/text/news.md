@@ -1,6 +1,6 @@
 # News
 
-## 0.1.7: 2014-06-29 (planned)
+## 0.1.7: 2014-05-29 (planned)
 
  * Updated the default port number, same to `droonga-engine`'s one.
 
