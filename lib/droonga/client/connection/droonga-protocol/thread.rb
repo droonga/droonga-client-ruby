@@ -151,6 +151,7 @@ module Droonga
               @client_handlers.each_key do |client|
                 client.close
               end
+              @read_ios.clear
             end
 
             def host
@@ -194,18 +195,18 @@ module Droonga
                 @read_ios << client
                 @client_handlers[client] = lambda do
                   unpacker = MessagePack::Unpacker.new
-                  loop do
-                    readable, = IO.select([client], nil, nil, 0)
-                    break unless readable
+                  begin
                     data = client.read_nonblock(BUFFER_SIZE)
+                  rescue EOFError
+                    client.close
+                    @read_ios.delete(client)
+                    @client_handlers.delete(client)
+                  else
                     unpacker.feed_each(data) do |fluent_message|
                       tag, time, droonga_message = fluent_message
                       yield(droonga_message)
                     end
                   end
-                  client.close
-                  @read_ios.delete(client)
-                  @client_handlers.delete(client)
                 end
               else
                 @client_handlers[io].call
