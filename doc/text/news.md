@@ -1,5 +1,11 @@
 # News
 
+## 0.1.8: 2014-07-14
+
+### Fixes
+
+  * thread backend: Fixed a bug that some responses are dropped.
+
 ## 0.1.7: 2014-05-29
 
  * Updated the default port number, same to `droonga-engine`'s one.
