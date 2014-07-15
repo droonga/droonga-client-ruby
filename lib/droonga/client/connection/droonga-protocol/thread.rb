@@ -151,7 +151,6 @@ module Droonga
               @client_handlers.each_key do |client|
                 client.close
               end
-              @read_ios.clear
             end
 
             def host
