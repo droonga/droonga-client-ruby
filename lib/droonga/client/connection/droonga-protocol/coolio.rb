@@ -183,9 +183,7 @@ module Droonga
           end
 
           def request(message, options={}, &block)
-            id = message["id"] || generate_id
-            message = message.merge("id" => id,
-                                    "replyTo" => @receiver.droonga_name)
+            message = message.merge("replyTo" => @receiver.droonga_name)
             send(message, options) do |error|
               yield(error)
             end
@@ -211,9 +209,7 @@ module Droonga
           end
 
           def subscribe(message, options={}, &block)
-            id = message["id"] || generate_id
-            message = message.merge("id" => id,
-                                    "replyTo" => @receiver.droonga_name,
+            message = message.merge("replyTo" => @receiver.droonga_name,
                                     "from" => @receiver.droonga_name)
             send(message, options) do |error|
               yield(error)
@@ -245,11 +241,6 @@ module Droonga
           end
 
           def send(message, options={}, &block)
-            if message["id"].nil? or message["date"].nil?
-              id = message["id"] || generate_id
-              date = message["date"] || Time.now
-              message = message.merge("id" => id, "date" => date)
-            end
             @sender.send("#{@tag}.message", message) do
               host = @sender.peeraddr[3]
               port = @sender.peeraddr[1]
@@ -262,11 +253,6 @@ module Droonga
           def close
             @sender.close
             @receiver.close
-          end
-
-          private
-          def generate_id
-            Time.now.to_f.to_s
           end
         end
       end

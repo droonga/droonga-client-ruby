@@ -64,14 +64,25 @@ module Droonga
     end
 
     def send(message, options={}, &block)
+      if message["id"].nil? or message["date"].nil?
+        id = message["id"] || generate_id
+        date = message["date"] || Time.now
+        message = message.merge("id" => id, "date" => date)
+      end
       @connection.send(message, options, &block)
     end
 
     def request(message, options={}, &block)
+      if message["id"].nil?
+        message = message.merge("id" => generate_id)
+      end
       @connection.request(message, options, &block)
     end
 
     def subscribe(message, options={}, &block)
+      if message["id"].nil?
+        message = message.merge("id" => generate_id)
+      end
       @connection.subscribe(message, options, &block)
     end
 
@@ -91,6 +102,10 @@ module Droonga
       when :droonga
         Connection::DroongaProtocol.new(options)
       end
+    end
+
+    def generate_id
+      Time.now.to_f.to_s
     end
   end
 end
