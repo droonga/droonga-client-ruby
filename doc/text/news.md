@@ -1,5 +1,9 @@
 # News
 
+## 0.1.9: 2014-07-29 (planned)
+
+ * droonga-send: Accept default protocol, port, and tag. Now you can omit them for the `--server` option.
+
 ## 0.1.8: 2014-07-14
 
 ### Fixes
