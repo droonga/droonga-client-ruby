@@ -41,7 +41,7 @@ def parse_server(server, options)
   port     = $3
   tag      = $4
 
-  if host =~ /\A[0-9]+\z/ and port.nil?
+  if protocol and host =~ /\A[0-9]+\z/ and port.nil?
     # "host:port" case can be detected as "protocol:host" wrongly.
     port     = host
     host     = protocol
