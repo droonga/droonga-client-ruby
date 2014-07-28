@@ -100,7 +100,8 @@ parser.on("--server=PROTOCOL:HOST:PORT/TAG",
           "Droonga server to be connected.",
           "Use multiple servers to use round-robin requests.",
           "Specify this option multiple times to use multiple servers.",
-          "Protocol, port, and tag can be provided via other options but host name must be specified.",
+          "Protocol, port, and tag can be provided via other options ",
+          "but host name must be specified.",
           "(#{default_server})") do |server|
   servers << server
 end
