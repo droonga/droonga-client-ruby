@@ -25,14 +25,33 @@ require "droonga/client"
 options = OpenStruct.new
 options.report_request = false
 options.report_throughput = false
+options.default_protocol = "droonga"
+options.default_port     = 10031
+options.default_tag      = "droonga"
 
 servers = []
 default_server = "droonga:localhost:10031/droonga"
 messages_per_second = Droonga::Client::RateLimiter::NO_LIMIT
 
-def parse_server(server)
-  connect_info, tag = server.split(/\//, 2)
-  protocol, host, port = connect_info.split(/:/, 3)
+def parse_server(server, options)
+  server_matcher = /\A(?:(droonga|http):)?([^:]+)(?::([0-9]+))?(?:\/(.+))?\z/
+  server =~ server_matcher
+  protocol = $1
+  host     = $2
+  port     = $3
+  tag      = $4
+
+  if host =~ /\A[0-9]+\z/ and port.nil?
+    # "host:port" case can be detected as "protocol:host" wrongly.
+    port     = host
+    host     = protocol
+    protocol = nil
+  end
+
+  protocol ||= options.default_protocol
+  port     ||= options.default_port
+  tag      ||= options.default_tag
+
   {
     :host     => host,
     :port     => Integer(port),
@@ -81,6 +100,7 @@ parser.on("--server=PROTOCOL:HOST:PORT/TAG",
           "Droonga server to be connected.",
           "Use multiple servers to use round-robin requests.",
           "Specify this option multiple times to use multiple servers.",
+          "Protocol, port, and tag can be provided via other options but host name must be specified.",
           "(#{default_server})") do |server|
   servers << server
 end
@@ -89,6 +109,21 @@ parser.on("--messages-per-second=N", Integer,
           "'#{Droonga::Client::RateLimiter::NO_LIMIT}' means no limit.",
           "(#{messages_per_second})") do |n|
   messages_per_second = n
+end
+parser.on("--default-protocol=PROTOCOL",
+          "Default protocol for servers.",
+          "(#{options.default_protocol})") do |protocol|
+  options.default_protocol = protocol
+end
+parser.on("--default-port=PORT", Integer,
+          "Default port for servers.",
+          "(#{options.default_port})") do |port|
+  options.default_port = port
+end
+parser.on("--default-tag=TAG",
+          "Default tag for servers.",
+          "(#{options.default_tag})") do |tag|
+  options.default_tag = tag
 end
 parser.separator("")
 parser.separator("Report:")
@@ -106,7 +141,7 @@ request_json_files = parser.parse!(ARGV)
 
 servers << default_server if servers.empty?
 clients = servers.collect do |server|
-  client_options = parse_server(server)
+  client_options = parse_server(server, options)
   client = Droonga::Client.new(client_options)
   Droonga::Client::RateLimiter.new(client, messages_per_second)
 end
