@@ -195,6 +195,7 @@ module Droonga
                 response = _response
               end
             end
+            id = message["id"]
             @receiver.register(id) do |response|
               @receiver.unregister(id)
               block.call(response)
@@ -215,6 +216,7 @@ module Droonga
               yield(error)
             end
 
+            id = message["id"]
             request = InfiniteRequest.new(@loop)
             sync = block.nil?
             if sync
