@@ -125,7 +125,7 @@ module Droonga
         # Sends low level request. Normally, you should use other
         # convenience methods.
         #
-        # @param envelope [Hash] Request envelope.
+        # @param message [Hash] Request message.
         # @param options [Hash] The options to send request.
         #   TODO: WRITE ME
         # @return [void]
