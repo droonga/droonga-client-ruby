@@ -51,9 +51,9 @@
 ### Improvements
 
   * droonga-protocol: Removed needless `statusCode` parameter from request.
-  * droonga-protocol: Renamed {Droonga::Client#execute} to
+  * droonga-protocol: Renamed `Droonga::Client#execute` to
     {Droonga::Client#request}. This is incompatible change.
-  * droonga-protocol: Removed {Droonga::Client#search} because it is
+  * droonga-protocol: Removed `Droonga::Client#search` because it is
     not useful.
   * droonga-protocol: Changed to use `Socket.gethostname` as the
     default receiver host instead of `0.0.0.0`.
