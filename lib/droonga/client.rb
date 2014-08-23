@@ -29,6 +29,7 @@ module Droonga
       # finished.
       #
       # @param (see #initialize)
+      # @option (see #initialize)
       #
       # @yield [client] Gives the opened client. It is alive while yielding.
       # @yieldparam client [Client] The opened client.
