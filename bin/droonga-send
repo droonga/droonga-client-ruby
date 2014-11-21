@@ -141,10 +141,13 @@ end
 request_json_files = parser.parse!(ARGV)
 
 servers << default_server if servers.empty?
+if messages_per_second > 0 and servers.size > 1
+  messages_per_second = messages_per_second / servers.size
+end
 clients = servers.collect do |server|
   client_options = parse_server(server, options)
   client = Droonga::Client.new(client_options)
-  Droonga::Client::RateLimiter.new(client, messages_per_second / servers.size)
+  Droonga::Client::RateLimiter.new(client, messages_per_second)
 end
 
 if options.report_throughput
