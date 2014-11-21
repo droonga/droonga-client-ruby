@@ -16,6 +16,7 @@
 module Droonga
   class Client
     class RateLimiter
+      DEFAULT_LIMIT = 100
       NO_LIMIT = -1
 
       def initialize(client, messages_per_second)

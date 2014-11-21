@@ -31,7 +31,7 @@ options.default_tag      = "droonga"
 
 servers = []
 default_server = "droonga:localhost:10031/droonga"
-messages_per_second = Droonga::Client::RateLimiter::NO_LIMIT
+messages_per_second = Droonga::Client::RateLimiter::DEFAULT_LIMIT
 
 def parse_server(server, options)
   server_matcher = /\A(?:(droonga|http):)?([^:]+)(?::([0-9]+))?(?:\/(.+))?\z/
