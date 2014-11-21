@@ -144,7 +144,7 @@ servers << default_server if servers.empty?
 clients = servers.collect do |server|
   client_options = parse_server(server, options)
   client = Droonga::Client.new(client_options)
-  Droonga::Client::RateLimiter.new(client, messages_per_second)
+  Droonga::Client::RateLimiter.new(client, messages_per_second / servers.size)
 end
 
 if options.report_throughput
