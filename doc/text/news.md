@@ -2,8 +2,14 @@
 
 ## 0.2.0: 2014-11-29 (planned)
 
- * droonga-send: Restrict the number of sending messages per second to 100 by default.
-   Too many inpouring messages will make the cluster overflowed.
+ * droonga-send:
+   * Restrict the number of sending messages per second to 100 by default.
+     Too many inpouring messages will make the cluster overflowed.
+   * Calculate suitable limitation about number of sending messages per second
+     for each endpoint, based on `--messages-per-second`.
+     In old versions, actually too many messages are sent to the cluster
+     because the limit affected for each node. (So, even if you specify `100`,
+     actually 300 messages were possibly sent when there are three endpoints.)
 
 ## 0.1.9: 2014-07-29
 
