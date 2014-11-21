@@ -1,5 +1,10 @@
 # News
 
+## 0.2.0: 2014-11-29 (planned)
+
+ * droonga-send: Restrict the number of sending messages per second to 100 by default.
+   Too many inpouring messages will make the cluster overflowed.
+
 ## 0.1.9: 2014-07-29
 
  * droonga-send: Accept default protocol, port, and tag. Now you can omit them for the `--server` option.
