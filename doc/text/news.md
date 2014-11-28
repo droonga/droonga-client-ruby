@@ -1,6 +1,6 @@
 # News
 
-## 0.2.0: 2014-11-29 (planned)
+## 0.2.0: 2014-11-29
 
  * droonga-send:
    * Restrict the number of sending messages per second to 100 by default.
