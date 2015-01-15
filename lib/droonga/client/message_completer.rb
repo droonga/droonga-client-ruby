@@ -25,7 +25,7 @@ module Droonga
         @date ||= @options["date"]
       end
 
-      def perfect(message)
+      def complete(message)
         id   = message["id"] || generate_id
         date = message["date"] || @date || new_date
         message.merge("id" => id, "date" => date)
