@@ -42,20 +42,20 @@ module Droonga
       private
       def validate_id(message)
         unless message["id"]
-          raise MissingId.new(message["id"])
+          raise MissingId.new(message)
         end
       end
 
       def validate_dataset(message)
         unless message["dataset"]
-          raise MissingDataset.new(message["dataset"])
+          raise MissingDataset.new(message)
         end
       end
 
       def validate_date(message)
         Time.parse(message["date"])
       rescue ArgumentError => error
-        raise InvalidDate.new(message["date"])
+        raise InvalidDate.new(message)
       end
     end
   end
