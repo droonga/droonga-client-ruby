@@ -20,6 +20,8 @@ require "droonga/client/error"
 require "droonga/client/connection/http"
 require "droonga/client/connection/droonga-protocol"
 require "droonga/client/rate-limiter"
+require "droonga/client/message_perfector"
+require "droonga/client/message_validator"
 
 module Droonga
   class Client
@@ -62,28 +64,25 @@ module Droonga
     #   from Droonga Engine.
     def initialize(options={})
       @connection = create_connection(options)
+      @perfector = MessagePerfector.new
+      @validator = MessageValidator.new
     end
 
     def send(message, options={}, &block)
-      if message["id"].nil? or message["date"].nil?
-        id = message["id"] || generate_id
-        date = message["date"] || Time.now
-        message = message.merge("id" => id, "date" => date)
-      end
+      message = @perfector.perfect(message)
+      @validator.validate(message)
       @connection.send(message, options, &block)
     end
 
     def request(message, options={}, &block)
-      if message["id"].nil?
-        message = message.merge("id" => generate_id)
-      end
+      message = @perfector.perfect(message)
+      @validator.validate(message)
       @connection.request(message, options, &block)
     end
 
     def subscribe(message, options={}, &block)
-      if message["id"].nil?
-        message = message.merge("id" => generate_id)
-      end
+      message = @perfector.perfect(message)
+      @validator.validate(message)
       @connection.subscribe(message, options, &block)
     end
 
@@ -103,10 +102,6 @@ module Droonga
       when :droonga
         Connection::DroongaProtocol.new(options)
       end
-    end
-
-    def generate_id
-      Time.now.to_f.to_s
     end
   end
 end

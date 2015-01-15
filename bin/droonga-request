@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Copyright (C) 2014-2015 Droonga Project
+# Copyright (C) 2014 Droonga Project
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -20,8 +20,6 @@ require "yajl"
 require "json"
 
 require "droonga/client"
-require "droonga/client/message_perfector"
-require "droonga/client/message_validator"
 
 options = {
   :host                => "localhost",
@@ -101,9 +99,6 @@ parser.on("--[no-]report-elapsed-time",
 end
 request_json_files = parser.parse!(ARGV)
 
-perfector = Droonga::Client::MessagePerfector.new
-validator = Droonga::Client::MessageValidator.new
-
 client = Droonga::Client.new(options)
 json_parser = Yajl::Parser.new
 json_parser.on_parse_complete = lambda do |request_message|
@@ -117,8 +112,6 @@ json_parser.on_parse_complete = lambda do |request_message|
     message << "\n"
     print(message)
   end
-  request_message = perfector.perfect(request_message)
-  validator.validate(request_message)
   start = Time.now
   request = client.request(request_message) do |response|
     message = ""

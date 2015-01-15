@@ -26,18 +26,18 @@ module Droonga
       end
 
       def perfect(message)
-        message["id"]   ||= generate_id
-        message["date"] ||= date
-        message
+        id   = message["id"] || generate_id
+        date = message["date"] || @date || new_date
+        message.merge("id" => id, "date" => date)
       end
 
       private
       def generate_id
-        "#{Time.now} / #{Random.rand}"
+        Time.now.to_f.to_s
       end
 
-      def date
-        @date ||= Time.now.iso8601
+      def new_date
+        Time.now.iso8601
       end
     end
   end
