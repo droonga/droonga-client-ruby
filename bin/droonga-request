@@ -21,6 +21,7 @@ require "json"
 
 require "droonga/client"
 require "droonga/client/message_perfector"
+require "droonga/client/message_validator"
 
 options = {
   :host                => "localhost",
