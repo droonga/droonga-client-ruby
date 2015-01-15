@@ -20,9 +20,6 @@ require "time"
 module Droonga
   class Client
     class MessageValidator
-      class MissingId < ArgumentError
-      end
-
       class MissingDataset < ArgumentError
       end
 
@@ -34,18 +31,11 @@ module Droonga
       end
 
       def validate(message)
-        validate_id(message)
         validate_dataset(message)
         validate_date(message)
       end
 
       private
-      def validate_id(message)
-        unless message["id"]
-          raise MissingId.new(message)
-        end
-      end
-
       def validate_dataset(message)
         unless message["dataset"]
           raise MissingDataset.new(message)
