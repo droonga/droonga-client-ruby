@@ -21,6 +21,8 @@ require "yajl"
 require "json"
 
 require "droonga/client"
+require "droonga/client/message_perfector"
+require "droonga/client/message_validator"
 
 options = OpenStruct.new
 options.report_request = false
@@ -32,6 +34,9 @@ options.default_tag      = "droonga"
 servers = []
 default_server = "droonga:localhost:10031/droonga"
 messages_per_second = Droonga::Client::RateLimiter::DEFAULT_LIMIT
+
+perfector = Droonga::Client::MessagePerfector.new
+validator = Droonga::Client::MessageValidator.new
 
 def parse_server(server, options)
   server_matcher = /\A(?:(droonga|http):)?([^:]+)(?::([0-9]+))?(?:\/(.+))?\z/
@@ -167,6 +172,8 @@ json_parser.on_parse_complete = lambda do |request_message|
     message << "\n"
     print(message)
   end
+  request_message = perfector.perfect(request_message)
+  validator.validate(request_message)
   client = clients[client_index]
   client.send(request_message)
   client_index = (client_index + 1) % clients.size
