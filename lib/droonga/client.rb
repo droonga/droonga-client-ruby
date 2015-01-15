@@ -20,7 +20,7 @@ require "droonga/client/error"
 require "droonga/client/connection/http"
 require "droonga/client/connection/droonga-protocol"
 require "droonga/client/rate-limiter"
-require "droonga/client/message_perfector"
+require "droonga/client/message_completer"
 require "droonga/client/message_validator"
 
 module Droonga
@@ -64,24 +64,24 @@ module Droonga
     #   from Droonga Engine.
     def initialize(options={})
       @connection = create_connection(options)
-      @perfector = MessagePerfector.new
+      @completer = MessageCompleter.new
       @validator = MessageValidator.new
     end
 
     def send(message, options={}, &block)
-      message = @perfector.perfect(message)
+      message = @completer.complete(message)
       @validator.validate(message)
       @connection.send(message, options, &block)
     end
 
     def request(message, options={}, &block)
-      message = @perfector.perfect(message)
+      message = @completer.complete(message)
       @validator.validate(message)
       @connection.request(message, options, &block)
     end
 
     def subscribe(message, options={}, &block)
-      message = @perfector.perfect(message)
+      message = @completer.complete(message)
       @validator.validate(message)
       @connection.subscribe(message, options, &block)
     end

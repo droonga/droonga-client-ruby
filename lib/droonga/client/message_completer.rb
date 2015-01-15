@@ -19,7 +19,7 @@ require "time"
 
 module Droonga
   class Client
-    class MessagePerfector
+    class MessageCompleter
       def initialize(options={})
         @options = options
         @date ||= @options["date"]
