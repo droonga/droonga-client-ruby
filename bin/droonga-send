@@ -28,6 +28,7 @@ options.report_throughput = false
 options.default_protocol = "droonga"
 options.default_port     = 10031
 options.default_tag      = "droonga"
+options.validation       = true
 
 servers = []
 default_server = "droonga:localhost:10031/droonga"
@@ -57,6 +58,7 @@ def parse_server(server, options)
     :port     => Integer(port),
     :protocol => protocol.to_sym,
     :tag      => tag,
+    :validation => options.validation,
   }
 end
 
@@ -137,6 +139,13 @@ parser.on("--report-throughput",
           "Reports throughput by messages per second.",
           "(no)") do
   options.report_throughput = true
+end
+parser.separator("")
+parser.separator("Misc:")
+parser.on("--[no-]validation",
+          "Do validation for input message or not.",
+          "(#{options.validation})") do |validation|
+  options.validation = validation
 end
 request_json_files = parser.parse!(ARGV)
 

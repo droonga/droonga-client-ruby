@@ -32,6 +32,7 @@ options = {
   :receiver_port       => 0,
   :report_request      => false,
   :report_elapsed_time => true,
+  :validation          => true,
 }
 
 parser = OptionParser.new
@@ -96,6 +97,13 @@ parser.on("--[no-]report-elapsed-time",
           "Reports elapsed time.",
           "(#{options[:report_elapsed_time]})") do |report_elapsed_time|
   options[:report_elapsed_time] = report_elapsed_time
+end
+parser.separator("")
+parser.separator("Misc:")
+parser.on("--[no-]validation",
+          "Do validation for input message or not.",
+          "(#{options[:validation]})") do |validation|
+  options[:validation] = validation
 end
 request_json_files = parser.parse!(ARGV)
 
