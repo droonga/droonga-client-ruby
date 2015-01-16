@@ -28,6 +28,7 @@ options.report_throughput = false
 options.default_protocol = "droonga"
 options.default_port     = 10031
 options.default_tag      = "droonga"
+options.completion       = true
 options.validation       = true
 
 servers = []
@@ -58,6 +59,7 @@ def parse_server(server, options)
     :port     => Integer(port),
     :protocol => protocol.to_sym,
     :tag      => tag,
+    :completion => options.completion,
     :validation => options.validation,
   }
 end
@@ -141,7 +143,12 @@ parser.on("--report-throughput",
   options.report_throughput = true
 end
 parser.separator("")
-parser.separator("Misc:")
+parser.separator("Messages:")
+parser.on("--[no-]completion",
+          "Do completion of required fields for input message or not.",
+          "(#{options.completion})") do |completion|
+  options.completion = completion
+end
 parser.on("--[no-]validation",
           "Do validation for input message or not.",
           "(#{options.validation})") do |validation|

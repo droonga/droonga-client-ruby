@@ -32,6 +32,7 @@ options = {
   :receiver_port       => 0,
   :report_request      => false,
   :report_elapsed_time => true,
+  :completion          => true,
   :validation          => true,
 }
 
@@ -99,7 +100,12 @@ parser.on("--[no-]report-elapsed-time",
   options[:report_elapsed_time] = report_elapsed_time
 end
 parser.separator("")
-parser.separator("Misc:")
+parser.separator("Messages:")
+parser.on("--[no-]completion",
+          "Do completion of required fields for input message or not.",
+          "(#{options[:completion]})") do |completion|
+  options[:completion] = completion
+end
 parser.on("--[no-]validation",
           "Do validation for input message or not.",
           "(#{options[:validation]})") do |validation|

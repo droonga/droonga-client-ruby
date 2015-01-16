@@ -2,10 +2,13 @@
 
 ## 0.2.1: 2005-01-29 (planned)
 
+ * Required fields of input messages are automatically completed by default.
  * Input messages are automatically validated by default.
  * droonga-send, droonga-request:
-   A new option `--[no-]validation` is introduced.
-   You should specify `--no-validation` to skip validation.
+   * A new option `--[no-]completion` is introduced.
+     You should specify `--no-completion` to send incomplete messages intentionally.
+   * A new option `--[no-]validation` is introduced.
+     You should specify `--no-validation` to send invalid messages intentionally.
 
 ## 0.2.0: 2014-11-29
 
