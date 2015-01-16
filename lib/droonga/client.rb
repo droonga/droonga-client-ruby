@@ -68,29 +68,29 @@ module Droonga
     #   Do or do not validate input messages.
     def initialize(options={})
       @connection = create_connection(options)
-      unless options[:completion] == false
-        @completer = MessageCompleter.new
-      end
-      unless options[:validation] == false
-        @validator = MessageValidator.new
-      end
+
+      @completion = options[:completion] != false
+      @validation = options[:validation] != false
+
+      @completer = MessageCompleter.new
+      @validator = MessageValidator.new
     end
 
     def send(message, options={}, &block)
-      message = @completer.complete(message) if @completer
-      @validator.validate(message) if @validator
+      message = do_completion(message, options)
+      do_validation(message, options)
       @connection.send(message, options, &block)
     end
 
     def request(message, options={}, &block)
-      message = @completer.complete(message) if @completer
-      @validator.validate(message) if @validator
+      message = do_completion(message, options)
+      do_validation(message, options)
       @connection.request(message, options, &block)
     end
 
     def subscribe(message, options={}, &block)
-      message = @completer.complete(message) if @completer
-      @validator.validate(message) if @validator
+      message = do_completion(message, options)
+      do_validation(message, options)
       @connection.subscribe(message, options, &block)
     end
 
@@ -110,6 +110,24 @@ module Droonga
       when :droonga
         Connection::DroongaProtocol.new(options)
       end
+    end
+
+    def do_completion(message, options={})
+      if options[:completion].nil?
+        return message unless @completion
+      else
+        return message if options[:completion] == false
+      end
+      @completer.complete(message)
+    end
+
+    def do_validation(message, options={})
+      if options[:validation].nil?
+        return unless @validation
+      else
+        return if options[:validation] == false
+      end
+      @validator.validate(message)
     end
   end
 end
