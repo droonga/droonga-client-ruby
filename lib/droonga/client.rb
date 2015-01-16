@@ -62,27 +62,31 @@ module Droonga
     # @option options [Integer] :timeout (5)
     #   The timeout value for connecting to, writing to and reading
     #   from Droonga Engine.
+    # @option options [Boolean] :validation (true)
+    #   Do or do not validate input messages.
     def initialize(options={})
       @connection = create_connection(options)
       @completer = MessageCompleter.new
-      @validator = MessageValidator.new
+      unless options[:validation] == false
+        @validator = MessageValidator.new
+      end
     end
 
     def send(message, options={}, &block)
       message = @completer.complete(message)
-      @validator.validate(message)
+      @validator.validate(message) if @validator
       @connection.send(message, options, &block)
     end
 
     def request(message, options={}, &block)
       message = @completer.complete(message)
-      @validator.validate(message)
+      @validator.validate(message) if @validator
       @connection.request(message, options, &block)
     end
 
     def subscribe(message, options={}, &block)
       message = @completer.complete(message)
-      @validator.validate(message)
+      @validator.validate(message) if @validator
       @connection.subscribe(message, options, &block)
     end
 
