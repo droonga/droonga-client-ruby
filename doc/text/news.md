@@ -1,5 +1,12 @@
 # News
 
+## 0.2.1: 2005-01-29 (planned)
+
+ * Input messages are automatically validated by default.
+ * droonga-send, droonga-request:
+   A new option `--[no-]validation` is introduced.
+   You should specify `--no-validation` to skip validation.
+
 ## 0.2.0: 2014-11-29
 
  * droonga-send:
