@@ -1,6 +1,6 @@
 # News
 
-## 0.2.1: 2005-01-29 (planned)
+## 0.2.1: 2005-04-29 (planned)
 
  * Required fields of input messages are automatically completed by default.
  * Input messages are automatically validated by default.
@@ -9,6 +9,8 @@
      You should specify `--no-completion` to send incomplete messages intentionally.
    * A new option `--[no-]validation` is introduced.
      You should specify `--no-validation` to send invalid messages intentionally.
+   * The "date" field is filled with the format same to droonga-engine's internal one
+     like "2015-04-08T06:16:20.571303Z".
 
 ## 0.2.0: 2014-11-29
 
