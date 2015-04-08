@@ -36,8 +36,10 @@ module Droonga
         Time.now.to_f.to_s
       end
 
+      MICRO_SECONDS_DECIMAL_PLACE = 6
+
       def new_date
-        Time.now.iso8601
+        Time.now.utc.iso8601(MICRO_SECONDS_DECIMAL_PLACE)
       end
     end
   end
