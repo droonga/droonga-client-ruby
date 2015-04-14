@@ -4,6 +4,9 @@
 
  * Required fields of input messages are automatically completed by default.
  * Input messages are automatically validated by default.
+ * Timeout option for subscription is available.
+   You can unsubscribe subscription automatically with specified timeout, like:
+   `client.subscribe(request, :subscription_timeout => 10)`
  * droonga-send, droonga-request:
    * A new option `--[no-]completion` is introduced.
      You should specify `--no-completion` to send incomplete messages intentionally.
