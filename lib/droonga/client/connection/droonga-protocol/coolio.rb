@@ -37,11 +37,22 @@ module Droonga
           end
 
           class InfiniteRequest
-            def initialize(loop)
+            attr_writer :on_timeout
+
+            def initialize(loop, options={})
               @loop = loop
+              @timeout_seconds = options[:timeout_seconds]
             end
 
             def wait
+              if @timeout_seconds
+                @timer = Coolio::TimerWatcher.new(@timeout_seconds)
+                @timer.on_timer do
+                  @timer.detach
+                  @on_timeout.call if @on_timeout
+                end
+                @loop.attach(@timer)
+              end
               @loop.run
             end
           end
@@ -217,7 +228,11 @@ module Droonga
             end
 
             id = message["id"]
-            request = InfiniteRequest.new(@loop)
+            request = InfiniteRequest.new(@loop,
+                                          :timeout_seconds => options[:timeout_seconds])
+            request.on_timeout = lambda do
+              @receiver.unregister(id)
+            end
             sync = block.nil?
             if sync
               yielder = nil
