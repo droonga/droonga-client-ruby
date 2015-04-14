@@ -81,16 +81,23 @@ module Droonga
             send(message, options)
 
             subscription_timeout = options[:subscription_timeout]
+            max_messages = options[:max_messages]
             start = Time.now
             receive_options = {
               :timeout => options[:timeout] || DEFAULT_TIMEOUT_SECONDS,
             }
+            n_messages = 0
             sync = block.nil?
             if sync
               Enumerator.new do |yielder|
                 loop do
                   receiver.receive(receive_options) do |object|
                     yielder << object
+                    n_messages += 1
+                  end
+                  if max_messages and
+                       n_messages >= max_messages
+                    break
                   end
                   if subscription_timeout
                     elapsed_seconds = Time.now - start
@@ -103,7 +110,14 @@ module Droonga
               thread = ::Thread.new do
                 begin
                   loop do
-                    receiver.receive(receive_options, &block)
+                    receiver.receive(receive_options) do |message|
+                      block.call(message)
+                      n_messages += 1
+                    end
+                    if max_messages and
+                         n_messages >= max_messages
+                      break
+                    end
                     if subscription_timeout
                       elapsed_seconds = Time.now - start
                       break if elapsed_seconds >= subscription_timeout
