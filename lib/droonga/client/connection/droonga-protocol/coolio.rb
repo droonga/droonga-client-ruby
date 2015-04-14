@@ -228,8 +228,10 @@ module Droonga
             end
 
             id = message["id"]
-            request = InfiniteRequest.new(@loop,
-                                          :timeout_seconds => options[:timeout_seconds])
+            request_options = {
+              :timeout_seconds => options[:timeout_seconds],
+            }
+            request = InfiniteRequest.new(@loop, request_options)
             request.on_timeout = lambda do
               @receiver.unregister(id)
             end
