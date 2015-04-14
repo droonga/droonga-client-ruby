@@ -44,7 +44,7 @@ module Droonga
 
       def validate_date(message)
         Time.parse(message["date"])
-      rescue ArgumentError => error
+      rescue ArgumentError
         raise InvalidDate.new(message)
       end
     end
