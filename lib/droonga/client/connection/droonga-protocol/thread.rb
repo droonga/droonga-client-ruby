@@ -79,7 +79,7 @@ module Droonga
             send(message, options)
 
             receive_options = {
-              :timeout => nil,
+              :timeout => options[:timeout_seconds],
             }
             sync = block.nil?
             if sync
