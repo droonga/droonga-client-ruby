@@ -41,12 +41,12 @@ module Droonga
 
             def initialize(loop, options={})
               @loop = loop
-              @timeout_seconds = options[:timeout_seconds]
+              @subscription_timeout = options[:subscription_timeout]
             end
 
             def wait
-              if @timeout_seconds
-                @timer = Coolio::TimerWatcher.new(@timeout_seconds)
+              if @subscription_timeout
+                @timer = Coolio::TimerWatcher.new(@subscription_timeout)
                 @timer.on_timer do
                   @timer.detach
                   @on_timeout.call if @on_timeout
@@ -229,7 +229,7 @@ module Droonga
 
             id = message["id"]
             request_options = {
-              :timeout_seconds => options[:timeout_seconds],
+              :subscription_timeout => options[:subscription_timeout],
             }
             request = InfiniteRequest.new(@loop, request_options)
             request.on_timeout = lambda do

@@ -78,9 +78,10 @@ module Droonga
             message["from"] = receive_end_point
             send(message, options)
 
-            timeout_seconds = options[:timeout_seconds]
+            subscription_timeout = options[:subscription_timeout]
+            start = Time.now
             receive_options = {
-              :timeout => timeout_seconds,
+              :timeout => options[:timeout],
             }
             sync = block.nil?
             if sync
@@ -88,6 +89,10 @@ module Droonga
                 loop do
                   receiver.receive(receive_options) do |object|
                     yielder << object
+                  end
+                  if subscription_timeout
+                    elapsed_seconds = Time.now - start
+                    break if elapsed_seconds >= subscription_timeout
                   end
                 end
                 receiver.close
@@ -97,6 +102,10 @@ module Droonga
                 begin
                   loop do
                     receiver.receive(receive_options, &block)
+                    if subscription_timeout
+                      elapsed_seconds = Time.now - start
+                      break if elapsed_seconds >= subscription_timeout
+                    end
                   end
                 ensure
                   receiver.close
@@ -164,7 +173,7 @@ module Droonga
               timeout = options[:timeout]
               catch do |tag|
                 loop do
-                  start = Time.new
+                  start = Time.now
                   readable_ios, = IO.select(@read_ios, nil, nil, timeout)
                   break if readable_ios.nil?
                   if timeout
