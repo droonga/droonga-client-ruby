@@ -102,6 +102,8 @@ module Droonga
           end
 
           class Receiver < ::Coolio::TCPServer
+            attr_accessor :max_messages
+
             def initialize(*args)
               super(*args) do |engine|
                 @engines << engine
@@ -109,6 +111,7 @@ module Droonga
               end
               @requests = {}
               @engines = []
+              @max_messages = nil
             end
 
             def close
@@ -153,14 +156,21 @@ module Droonga
             private
             def handle_engine(engine)
               unpacker = MessagePack::Unpacker.new
+              n_messages = 0
               on_read = lambda do |data|
                 unpacker.feed_each(data) do |fluent_message|
                   tag, time, droonga_message = fluent_message
                   id = droonga_message["inReplyTo"]
                   request = @requests[id]
-                  next if request.nil?
+                  n_messages += 1
+                  if request
                   request[:received] = true
                   request[:callback].call(droonga_message)
+                  end
+                  if @max_messages and
+                       n_messages >= @max_messages
+                    unregister(id)
+                  end
                 end
               end
               engine.on_read do |data|
@@ -231,6 +241,7 @@ module Droonga
             request_options = {
               :subscription_timeout => options[:subscription_timeout],
             }
+            @receiver.max_messages = options[:max_messages]
             request = InfiniteRequest.new(@loop, request_options)
             request.on_timeout = lambda do
               @receiver.unregister(id)
