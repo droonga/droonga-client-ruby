@@ -23,6 +23,8 @@ module Droonga
     module Connection
       class DroongaProtocol
         class Thread
+          DEFAULT_TIMEOUT_SECONDS = 10
+
           class Request
             def initialize(thread)
               @thread = thread
@@ -81,7 +83,7 @@ module Droonga
             subscription_timeout = options[:subscription_timeout]
             start = Time.now
             receive_options = {
-              :timeout => options[:timeout],
+              :timeout => options[:timeout] || DEFAULT_TIMEOUT_SECONDS,
             }
             sync = block.nil?
             if sync
