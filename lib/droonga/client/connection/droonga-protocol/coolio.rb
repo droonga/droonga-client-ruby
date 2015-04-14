@@ -164,8 +164,8 @@ module Droonga
                   request = @requests[id]
                   n_messages += 1
                   if request
-                  request[:received] = true
-                  request[:callback].call(droonga_message)
+                    request[:received] = true
+                    request[:callback].call(droonga_message)
                   end
                   if @max_messages and
                        n_messages >= @max_messages
