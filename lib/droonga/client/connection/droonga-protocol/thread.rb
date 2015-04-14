@@ -82,17 +82,12 @@ module Droonga
             receive_options = {
               :timeout => timeout_seconds,
             }
-            start = Time.new
             sync = block.nil?
             if sync
               Enumerator.new do |yielder|
                 loop do
                   receiver.receive(receive_options) do |object|
                     yielder << object
-                  end
-                  if timeout_seconds and
-                       Time.new - start > timeout_seconds
-                    break
                   end
                 end
                 receiver.close
@@ -102,10 +97,6 @@ module Droonga
                 begin
                   loop do
                     receiver.receive(receive_options, &block)
-                    if timeout_seconds and
-                         Time.new - start > timeout_seconds
-                      break
-                    end
                   end
                 ensure
                   receiver.close
