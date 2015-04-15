@@ -58,7 +58,7 @@ module Droonga
         end
 
         true
-      rescue InvalidCommandName, MissingCommandName
+      rescue MissingRequiredParameter, InvalidCommandName, MissingCommandName
         puts(@options)
         true
       end

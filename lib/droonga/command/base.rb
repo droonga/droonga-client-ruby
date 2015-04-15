@@ -21,6 +21,9 @@ require "droonga/client"
 
 module Droonga
   module Command
+    class MissingRequiredParameter < StandardError
+    end
+
     class Base
       private
       def parse_options(&block)
@@ -48,7 +51,7 @@ module Droonga
         @options = options
       rescue Slop::MissingOptionError => error
         $stderr.puts(error)
-        exit(false)
+        raise MissingRequiredParameter.new
       end
 
       def client
