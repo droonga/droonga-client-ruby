@@ -31,6 +31,8 @@ module Droonga
     DEFAULT_TAG  = "droonga"
     DEFAULT_DATASET = "Default"
 
+    attr_writer :on_error
+
     class << self
       # Opens a new connection and yields a {Client} object to use the
       # connection. The client is closed after the given block is
@@ -74,6 +76,9 @@ module Droonga
     #   Do or do not validate input messages.
     def initialize(options={})
       @connection = create_connection(options)
+      @connection.on_error = lambda do |error|
+        on_error(error)
+      end
 
       @completion = options[:completion] != false
       @validation = options[:validation] != false
@@ -134,6 +139,10 @@ module Droonga
         return if options[:validation] == false
       end
       @validator.validate(message)
+    end
+
+    def on_error(error)
+      @on_error.call(error) if @on_error
     end
   end
 end

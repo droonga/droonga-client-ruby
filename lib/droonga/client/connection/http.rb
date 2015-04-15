@@ -26,6 +26,8 @@ module Droonga
   class Client
     module Connection
       class HTTP
+        attr_writer :on_error
+
         class InvalidHTTPMethodError < Error
           attr_reader :http_method
           attr_reader :request_message
@@ -178,6 +180,10 @@ module Droonga
           else
             "#{base_path}?#{Rack::Utils.build_nested_query(parameters)}"
           end
+        end
+
+        def on_error(error)
+          @on_error.call(error) if @on_error
         end
       end
     end

@@ -21,12 +21,17 @@ module Droonga
   class Client
     module Connection
       class DroongaProtocol
+        attr_writer :on_error
+
         def initialize(options={})
           @host = options[:host] || "127.0.0.1"
           @port = options[:port] || 24224
           @tag = options[:tag] || "droonga"
           @options = options
           @backend = create_backend
+          @backend.on_error = lambda do |error|
+            on_error(error)
+          end
         end
 
         # Sends a request message and receives one or more response
@@ -120,6 +125,10 @@ module Droonga
           backend_name = backend.to_s.capitalize
           backend_class = self.class.const_get(backend_name)
           backend_class.new(@host, @port, @tag, @options)
+        end
+
+        def on_error(error)
+          @on_error.call(error) if @on_error
         end
       end
     end
