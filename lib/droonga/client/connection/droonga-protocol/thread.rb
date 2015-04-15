@@ -54,6 +54,9 @@ module Droonga
 
           def request(message, options={}, &block)
             receiver = create_receiver
+            receiver.on_error = lambda do |error|
+              on_error(error)
+            end
             message = message.dup
             message["replyTo"] = "#{receiver.host}:#{receiver.port}/droonga"
             send(message, options)
@@ -158,7 +161,6 @@ module Droonga
             }
             begin
               receiver.receive(receive_options) do |response|
-                on_error(NilMessage.new("receiver.receive"))
                 yield(response)
               end
             ensure
@@ -171,6 +173,8 @@ module Droonga
           end
 
           class Receiver
+            attr_writer :on_error
+
             def initialize(options={})
               host = options[:host] || Socket.gethostname
               port = options[:port] || 0
@@ -235,7 +239,14 @@ module Droonga
                     @client_handlers.delete(client)
                   else
                     unpacker.feed_each(data) do |fluent_message|
+                      unless fluent_message
+                        on_error(NilMessage.new("thread / unpacker.feed_each"))
+                      end
                       tag, time, droonga_message = fluent_message
+                      unless droonga_message
+                        on_error(NilMessage.new("thread / unpacker.feed_each",
+                                                :fluent_message => fluent_message))
+                      end
                       yield(droonga_message)
                     end
                   end
@@ -243,6 +254,10 @@ module Droonga
               else
                 @client_handlers[io].call
               end
+            end
+
+            def on_error(error)
+              @on_error.call(error) if @on_error
             end
           end
         end
