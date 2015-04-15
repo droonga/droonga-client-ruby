@@ -27,6 +27,12 @@ module Droonga
 
           attr_writer :on_error
 
+          class ReceiverError < StandardError
+            def initialize(error)
+              super(error.inspect)
+            end
+          end
+
           class NilMessage < StandardError
           end
 
@@ -55,7 +61,7 @@ module Droonga
           def request(message, options={}, &block)
             receiver = create_receiver
             receiver.on_error = lambda do |error|
-              on_error(error)
+              on_error(ReceiverError.new(error))
             end
             message = message.dup
             message["replyTo"] = "#{receiver.host}:#{receiver.port}/droonga"

@@ -21,6 +21,12 @@ module Droonga
   class Client
     module Connection
       class DroongaProtocol
+        class BackendError < StandardError
+          def initialize(error)
+            super(error.inspect)
+          end
+        end
+
         attr_writer :on_error
 
         def initialize(options={})
@@ -30,7 +36,7 @@ module Droonga
           @options = options
           @backend = create_backend
           @backend.on_error = lambda do |error|
-            on_error(error)
+            on_error(BackendError.new(error))
           end
         end
 

@@ -23,6 +23,12 @@ module Droonga
         class Coolio
           attr_writer :on_error
 
+          class ReceiverError < StandardError
+            def initialize(error)
+              super(error.inspect)
+            end
+          end
+
           class NilMessage < StandardError
           end
 
@@ -166,11 +172,11 @@ module Droonga
               on_read = lambda do |data|
                 unpacker.feed_each(data) do |fluent_message|
                   unless fluent_message
-                    on_error(NilMessage.new("unpacker.feed_each"))
+                    on_error(NilMessage.new("coolio / unpacker.feed_each"))
                   end
                   tag, time, droonga_message = fluent_message
                   unless droonga_message
-                    on_error(NilMessage.new("unpacker.feed_each",
+                    on_error(NilMessage.new("coolio / unpacker.feed_each",
                                             :fluent_message => fluent_message.inspect))
                   end
                   id = droonga_message["inReplyTo"]
@@ -218,7 +224,7 @@ module Droonga
             @receiver_port = @options[:receiver_port] || 0
             @receiver = Receiver.new(@receiver_host, @receiver_port)
             @receiver.on_error = lambda do |error|
-              on_error(error)
+              on_error(ReceiverError.new(error))
             end
             @receiver.attach(@loop)
           end

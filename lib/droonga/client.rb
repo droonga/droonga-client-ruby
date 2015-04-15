@@ -33,6 +33,12 @@ module Droonga
 
     attr_writer :on_error
 
+    class ConnectionError < StandardError
+      def initialize(error)
+        super(error.inspect)
+      end
+    end
+
     class << self
       # Opens a new connection and yields a {Client} object to use the
       # connection. The client is closed after the given block is
@@ -77,7 +83,7 @@ module Droonga
     def initialize(options={})
       @connection = create_connection(options)
       @connection.on_error = lambda do |error|
-        on_error(error)
+        on_error(ConnectionError.new(error))
       end
 
       @completion = options[:completion] != false
