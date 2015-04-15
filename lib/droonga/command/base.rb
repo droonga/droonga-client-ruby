@@ -24,6 +24,9 @@ module Droonga
     class MissingRequiredParameter < StandardError
     end
 
+    class NoResponse < StandardError
+    end
+
     class Base
       private
       def parse_options(&block)

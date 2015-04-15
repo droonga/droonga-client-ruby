@@ -31,6 +31,7 @@ module Droonga
 
         response = client.request("dataset" => @options[:dataset],
                                   "type"    => "system.status")
+        raise NoResponse.new unless response
         body = response["body"]
 
         if @options[:pretty]
@@ -43,6 +44,9 @@ module Droonga
       rescue MissingRequiredParameter
         puts(@options)
         true
+      rescue NoResponse
+        puts("Error: request timed out.")
+        false
       end
     end
   end

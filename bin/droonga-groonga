@@ -49,6 +49,7 @@ module Droonga
         }
 
         response = client.request(groonga_message)
+        raise NoResponse.new unless response
         body = response["body"]
 
         if @options[:pretty]
@@ -61,6 +62,9 @@ module Droonga
       rescue MissingRequiredParameter, InvalidCommandName, MissingCommandName
         puts(@options)
         true
+      rescue NoResponse
+        puts("Error: request timed out.")
+        false
       end
 
       private
