@@ -23,10 +23,22 @@ module Droonga
   module Command
     class SystemStatus < Base
       def run
-        parse_options
+        parse_options do |option|
+          option.on(:pretty,
+                    "Output result as a pretty print JSON.",
+                    :default => false)
+        end
+
         response = client.request("dataset" => @options[:dataset],
                                   "type"    => "system.status")
-        puts(JSON.generate(response["body"]))
+        body = response["body"]
+
+        if @option[:pretty]
+          puts(JSON.pretty_generate(body))
+        else
+          puts(JSON.generate(body))
+        end
+
         exit(true)
       end
     end
