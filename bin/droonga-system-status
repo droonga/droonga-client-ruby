@@ -39,10 +39,10 @@ module Droonga
           puts(JSON.generate(body))
         end
 
-        exit(true)
+        true
       end
     end
   end
 end
 
-Droonga::Command::SystemStatus.new.run
+exit(Droonga::Command::SystemStatus.new.run)

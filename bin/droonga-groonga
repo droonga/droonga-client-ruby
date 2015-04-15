@@ -57,10 +57,10 @@ module Droonga
           puts(JSON.generate(body))
         end
 
-        exit(true)
+        true
       rescue InvalidCommandName, MissingCommandName
         puts(@options)
-        exit(true)
+        true
       end
 
       private
@@ -91,4 +91,4 @@ module Droonga
   end
 end
 
-Droonga::Command::Groonga.new.run
+exit(Droonga::Command::Groonga.new.run)
