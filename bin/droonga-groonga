@@ -22,6 +22,12 @@ require "droonga/command/base"
 module Droonga
   module Command
     class Groonga < Base
+      class InvalidCommandName < StandardError
+      end
+
+      class MissingCommandName < StandardError
+      end
+
       def run
         parse_options do |option|
           option.banner("Usage: droonga-groonga [groonga-command-name] [options]\n" +
@@ -34,6 +40,8 @@ module Droonga
         end
 
         groonga_command_name = ARGV.shift
+        assert_valid_command(groonga_command_name)
+
         groonga_message = {
           "dataset" => @options[:dataset],
           "type" => groonga_command_name,
@@ -53,6 +61,11 @@ module Droonga
       end
 
       private
+      def assert_valid_command(command)
+        raise InvalidCommandName.new(command) if /\A--.+\z/ =~ command
+        raise MissingCommandName.new if command.nil?
+      end
+
       def build_params(argv)
         params = {}
         option_name = nil
