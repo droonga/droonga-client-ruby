@@ -21,6 +21,11 @@ module Droonga
     module Connection
       class DroongaProtocol
         class Coolio
+          attr_writer :on_error
+
+          class NilMessage < StandardError
+          end
+
           class Request
             def initialize(receiver, id, loop)
               @receiver = receiver
@@ -103,6 +108,7 @@ module Droonga
 
           class Receiver < ::Coolio::TCPServer
             attr_accessor :max_messages
+            attr_writer :on_error
 
             def initialize(*args)
               super(*args) do |engine|
@@ -159,7 +165,14 @@ module Droonga
               n_messages = 0
               on_read = lambda do |data|
                 unpacker.feed_each(data) do |fluent_message|
+                  unless fluent_message
+                    on_error(NilMessage.new("unpacker.feed_each"))
+                  end
                   tag, time, droonga_message = fluent_message
+                  unless droonga_message
+                    on_error(NilMessage.new("unpacker.feed_each",
+                                            :fluent_message => fluent_message.inspect))
+                  end
                   id = droonga_message["inReplyTo"]
                   request = @requests[id]
                   n_messages += 1
@@ -184,6 +197,10 @@ module Droonga
                 on_close.call
               end
             end
+
+            def on_error(error)
+              @on_error.call(error) if @on_error
+            end
           end
 
           def initialize(host, port, tag, options={})
@@ -200,6 +217,9 @@ module Droonga
             @receiver_host = @options[:receiver_host] || Socket.gethostname
             @receiver_port = @options[:receiver_port] || 0
             @receiver = Receiver.new(@receiver_host, @receiver_port)
+            @receiver.on_error = lambda do |error|
+              on_error(error)
+            end
             @receiver.attach(@loop)
           end
 
@@ -283,6 +303,10 @@ module Droonga
           def close
             @sender.close
             @receiver.close
+          end
+
+          def on_error(error)
+            @on_error.call(error) if @on_error
           end
         end
       end

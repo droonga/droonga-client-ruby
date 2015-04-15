@@ -25,6 +25,11 @@ module Droonga
         class Thread
           DEFAULT_TIMEOUT_SECONDS = 10
 
+          attr_writer :on_error
+
+          class NilMessage < StandardError
+          end
+
           class Request
             def initialize(thread)
               @thread = thread
@@ -153,11 +158,16 @@ module Droonga
             }
             begin
               receiver.receive(receive_options) do |response|
+                on_error(NilMessage.new("receiver.receive"))
                 yield(response)
               end
             ensure
               receiver.close
             end
+          end
+
+          def on_error(error)
+            @on_error.call(error) if @on_error
           end
 
           class Receiver
