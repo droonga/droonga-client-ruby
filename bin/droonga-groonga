@@ -39,12 +39,12 @@ module Droonga
                     :default => false)
         end
 
-        groonga_command_name = ARGV.shift
-        assert_valid_command(groonga_command_name)
+        @command = ARGV.shift
+        assert_valid_command
 
         groonga_message = {
           "dataset" => @options[:dataset],
-          "type" => groonga_command_name,
+          "type" => @command,
           "body" => build_params(ARGV),
         }
 
@@ -58,12 +58,15 @@ module Droonga
         end
 
         exit(true)
+      rescue InvalidCommandName, MissingCommandName
+        puts(@options)
+        exit(true)
       end
 
       private
-      def assert_valid_command(command)
-        raise InvalidCommandName.new(command) if /\A--.+\z/ =~ command
-        raise MissingCommandName.new if command.nil?
+      def assert_valid_command
+        raise InvalidCommandName.new(@command) if /\A--.+\z/ =~ @command
+        raise MissingCommandName.new if @command.nil?
       end
 
       def build_params(argv)
