@@ -29,6 +29,7 @@ options.default_protocol = "droonga"
 options.default_host     = Droonga::Client::DEFAULT_HOST
 options.default_port     = Droonga::Client::DEFAULT_PORT
 options.default_tag      = Droonga::Client::DEFAULT_TAG
+options.default_dataset  = Droonga::Client::DEFAULT_DATASET
 options.completion       = true
 options.validation       = true
 
@@ -145,6 +146,11 @@ parser.on("--report-throughput",
 end
 parser.separator("")
 parser.separator("Messages:")
+parser.on("--default-dataset=NAME",
+          "Default dataset name for sending messages.",
+          "(#{options.default_dataset})") do |name|
+  options.default_dataset = name
+end
 parser.on("--[no-]completion",
           "Do completion of required fields for input message or not.",
           "(#{options.completion})") do |completion|
@@ -174,6 +180,7 @@ end
 client_index = 0
 json_parser = Yajl::Parser.new
 json_parser.on_parse_complete = lambda do |request_message|
+  request_message["dataset"] ||= options.default_dataset
   if options.report_request
     message = "Request: "
     begin
