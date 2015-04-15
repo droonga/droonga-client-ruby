@@ -33,7 +33,7 @@ module Droonga
                                   "type"    => "system.status")
         body = response["body"]
 
-        if @option[:pretty]
+        if @options[:pretty]
           puts(JSON.pretty_generate(body))
         else
           puts(JSON.generate(body))
