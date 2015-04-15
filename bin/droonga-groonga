@@ -24,8 +24,8 @@ module Droonga
     class Groonga < Base
       def run
         parse_options do |option|
-          option.banner("Usage: droonga-groonga [groonga-command-name] [options]")
-          option.banner("   ex: droonga-groonga select --table=Users")
+          option.banner("Usage: droonga-groonga [groonga-command-name] [options]\n" +
+                        "   ex: droonga-groonga select --table=Users")
 
           option.separator("Formatting:")
           option.on(:pretty,
