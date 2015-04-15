@@ -7,6 +7,7 @@
  * Timeout option for subscription is available.
    You can unsubscribe subscription automatically with specified timeout, like:
    `client.subscribe(request, :subscription_timeout => 10)`
+ * A new utility command `droonga-system-status` is available as a shorthand.
  * droonga-send, droonga-request:
    * A new option `--[no-]completion` is introduced.
      You should specify `--no-completion` to send incomplete messages intentionally.
