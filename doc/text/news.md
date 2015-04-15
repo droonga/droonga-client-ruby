@@ -13,6 +13,8 @@
      You should specify `--no-completion` to send incomplete messages intentionally.
    * A new option `--[no-]validation` is introduced.
      You should specify `--no-validation` to send invalid messages intentionally.
+   * A new option `--default-dataset` is introduced.
+     It is used for sending messages if they have no `dataset` field.
    * The "date" field is filled with the format same to droonga-engine's internal one
      like "2015-04-08T06:16:20.571303Z".
 
