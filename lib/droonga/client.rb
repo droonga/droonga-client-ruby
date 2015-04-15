@@ -25,6 +25,12 @@ require "droonga/client/message_validator"
 
 module Droonga
   class Client
+    DEFAULT_HOST = Socket.gethostname
+    DEFAULT_HOST.force_encoding("US-ASCII") if DEFAULT_HOST.ascii_only?
+    DEFAULT_PORT = 10031
+    DEFAULT_TAG  = "droonga"
+    DEFAULT_DATASET = "Default"
+
     class << self
       # Opens a new connection and yields a {Client} object to use the
       # connection. The client is closed after the given block is

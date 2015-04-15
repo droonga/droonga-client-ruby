@@ -22,13 +22,13 @@ require "json"
 require "droonga/client"
 
 options = {
-  :host                => "localhost",
-  :port                => 10031,
-  :tag                 => "droonga",
+  :host                => Droonga::Client::DEFAULT_HOST,
+  :port                => Droonga::Client::DEFAULT_PORT,
+  :tag                 => Droonga::Client::DEFAULT_TAG,
   :protocol            => :droonga,
   :timeout             => 1,
   :exit_on_response    => true,
-  :receiver_host       => "localhost",
+  :receiver_host       => Droonga::Client::DEFAULT_HOST,
   :receiver_port       => 0,
   :report_request      => false,
   :report_elapsed_time => true,

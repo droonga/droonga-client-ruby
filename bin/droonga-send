@@ -26,13 +26,14 @@ options = OpenStruct.new
 options.report_request = false
 options.report_throughput = false
 options.default_protocol = "droonga"
-options.default_port     = 10031
-options.default_tag      = "droonga"
+options.default_host     = Droonga::Client::DEFAULT_HOST
+options.default_port     = Droonga::Client::DEFAULT_PORT
+options.default_tag      = Droonga::Client::DEFAULT_TAG
 options.completion       = true
 options.validation       = true
 
 servers = []
-default_server = "droonga:localhost:10031/droonga"
+default_server = "#{options.default_protocol}:#{options.default_host}:#{options.default_port}/#{options.default_tag}"
 messages_per_second = Droonga::Client::RateLimiter::DEFAULT_LIMIT
 
 def parse_server(server, options)
