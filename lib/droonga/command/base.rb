@@ -29,7 +29,7 @@ module Droonga
 
           option.separator("Connections:")
           option.on(:host=,
-                    "Host name of the engine node."
+                    "Host name of the engine node.",
                     :default => Client::DEFAULT_HOST)
           option.on(:port=,
                     "Port number to communicate with the engine.",
