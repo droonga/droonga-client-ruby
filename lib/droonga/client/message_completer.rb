@@ -22,12 +22,12 @@ module Droonga
     class MessageCompleter
       def initialize(options={})
         @options = options
-        @date ||= @options["date"]
+        @fixed_date = @options[:fixed_date]
       end
 
       def complete(message)
         id   = message["id"] || generate_id
-        date = message["date"] || @date || new_date
+        date = message["date"] || @fixed_date || new_date
         message.merge("id" => id, "date" => date)
       end
 
