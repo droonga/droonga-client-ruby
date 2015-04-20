@@ -50,6 +50,9 @@ module Droonga
           option.on("receiver-host=",
                     "Host name of this host.",
                     :default => Client::DEFAULT_HOST)
+          option.on("timeout=",
+                    "Time to terminate unresponsive connections (in seconds).",
+                    :default => Client::DEFAULT_TIMEOUT_SECONDS)
         end
         @options = options
       rescue Slop::MissingOptionError => error
@@ -65,6 +68,7 @@ module Droonga
           :protocol      => :droonga,
           :receiver_host => @options["receiver-host"],
           :receiver_port => 0,
+          :default_timeout => @options[:timeout],
         }
         @client ||= Droonga::Client.new(options)
       end

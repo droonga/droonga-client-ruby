@@ -23,11 +23,15 @@ module Droonga
       def initialize(options={})
         @options = options
         @fixed_date = @options[:fixed_date]
+        @default_timeout = @options[:default_timeout]
       end
 
       def complete(message)
         id   = message["id"] || generate_id
         date = message["date"] || @fixed_date || new_date
+        if not have_timeout?(message) and @default_timeout
+          message["timeout"] = @default_timeout
+        end
         message.merge("id" => id, "date" => date)
       end
 
@@ -40,6 +44,12 @@ module Droonga
 
       def new_date
         Time.now.utc.iso8601(MICRO_SECONDS_DECIMAL_PLACE)
+      end
+
+      def have_timeout?(message)
+        return true if message["timeout"]
+        return false unless message["body"].is_a?(Hash)
+        not message["body"]["timeout"].nil?
       end
     end
   end

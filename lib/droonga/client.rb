@@ -30,6 +30,7 @@ module Droonga
     DEFAULT_PORT = 10031
     DEFAULT_TAG  = "droonga"
     DEFAULT_DATASET = "Default"
+    DEFAULT_TIMEOUT_SECONDS = 3
 
     attr_writer :on_error
 
@@ -89,7 +90,7 @@ module Droonga
       @completion = options[:completion] != false
       @validation = options[:validation] != false
 
-      @completer = MessageCompleter.new
+      @completer = MessageCompleter.new(:default_timeout => options[:default_timeout])
       @validator = MessageValidator.new
     end
 
