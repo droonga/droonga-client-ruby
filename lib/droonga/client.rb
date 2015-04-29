@@ -91,7 +91,8 @@ module Droonga
       @completion = options[:completion] != false
       @validation = options[:validation] != false
 
-      @completer = MessageCompleter.new(:default_timeout => options[:default_timeout])
+      @completer = MessageCompleter.new(:default_timeout => options[:default_timeout],
+                                        :default_target_role => options[:default_target_role])
       @validator = MessageValidator.new
     end
 

@@ -62,6 +62,7 @@ def parse_server(server, options)
     :port     => Integer(port),
     :protocol => protocol.to_sym,
     :tag      => tag,
+    :default_target_role => options.default_target_role,
     :completion => options.completion,
     :validation => options.validation,
   }
@@ -187,7 +188,6 @@ client_index = 0
 json_parser = Yajl::Parser.new
 json_parser.on_parse_complete = lambda do |request_message|
   request_message["dataset"] ||= options.default_dataset
-  request_message["targetRole"] ||= options.default_target_role
   if options.report_request
     message = "Request: "
     begin
