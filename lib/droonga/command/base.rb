@@ -64,7 +64,7 @@ module Droonga
       end
 
       def request(message)
-        resposne = nil
+        response = nil
         open do |client|
           response = client.request(message)
         end
