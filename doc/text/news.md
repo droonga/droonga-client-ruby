@@ -1,6 +1,6 @@
 # News
 
-## 0.2.1: 2005-04-29 (planned)
+## 0.2.1: 2005-04-29
 
  * Required fields of input messages are automatically completed by default.
  * Input messages are automatically validated by default.
