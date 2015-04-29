@@ -48,7 +48,7 @@ module Droonga
           "body" => build_params(ARGV),
         }
 
-        response = client.request(groonga_message)
+        response = request(groonga_message)
         raise NoResponse.new unless response
         body = response["body"]
 

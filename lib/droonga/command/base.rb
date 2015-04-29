@@ -63,7 +63,21 @@ module Droonga
         raise MissingRequiredParameter.new
       end
 
-      def client
+      def request(message)
+        resposne = nil
+        open do |client|
+          response = client.request(message)
+        end
+        response
+      end
+
+      def send(message)
+        open do |client|
+          client.send(message)
+        end
+      end
+
+      def open(&block)
         options = {
           :host          => @options[:host],
           :port          => @options[:port],
@@ -72,8 +86,11 @@ module Droonga
           :receiver_host => @options["receiver-host"],
           :receiver_port => 0,
           :default_timeout => @options[:timeout],
+          :default_target_role => @options[:target_role],
         }
-        @client ||= Droonga::Client.new(options)
+        Droonga::Client.open(options) do |client|
+          yield(client)
+        end
       end
     end
   end

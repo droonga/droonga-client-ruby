@@ -29,8 +29,8 @@ module Droonga
                     :default => false)
         end
 
-        response = client.request("dataset" => @options[:dataset],
-                                  "type"    => "system.status")
+        response = request("dataset" => @options[:dataset],
+                           "type"    => "system.status")
         raise NoResponse.new unless response
         body = response["body"]
 
