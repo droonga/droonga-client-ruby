@@ -26,7 +26,8 @@ module Droonga
         parse_options do |option|
           option.banner("Usage: droonga-add [options]\n" +
                         "   ex: droonga-add --table User --name Adam --age 10\n" +
-                        "       droonga-add --table Server --value:host example.com")
+                        "       droonga-add --table Server --value:host example.com\n" +
+                        "       (You can specify column value expressly with the prefix \"value:\".)")
 
           option.on("table=",
                     "Name of the target table.",
