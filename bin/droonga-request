@@ -27,6 +27,7 @@ options = {
   :tag                 => Droonga::Client::DEFAULT_TAG,
   :default_dataset     => Droonga::Client::DEFAULT_DATASET,
   :protocol            => :droonga,
+  :default_target_role => Droonga::Client::DEFAULT_TARGET_ROLE,
   :timeout             => 1,
   :exit_on_response    => true,
   :receiver_host       => Droonga::Client::DEFAULT_HOST,
@@ -107,6 +108,11 @@ parser.on("--detault-dataset=NAME",
           "(#{options[:default_dataset]})") do |name|
   options[:default_dataset] = name
 end
+parser.on("--detault-target-role=ROLE",
+          "Default target role of engine nodes for sending messages.",
+          "(#{options[:default_target_role]})") do |role|
+  options[:default_target_role] = role
+end
 parser.on("--[no-]completion",
           "Do completion of required fields for input message or not.",
           "(#{options[:completion]})") do |completion|
@@ -123,6 +129,7 @@ client = Droonga::Client.new(options)
 json_parser = Yajl::Parser.new
 json_parser.on_parse_complete = lambda do |request_message|
   request_message["dataset"] ||= options[:default_dataset]
+  request_message["targetRole"] ||= options[:default_target_role]
   if options[:report_request]
     message = "Request: "
     begin
