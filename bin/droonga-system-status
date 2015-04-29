@@ -43,7 +43,7 @@ module Droonga
         true
       rescue MissingRequiredParameter
         puts(@options)
-        true
+        false
       rescue NoResponse
         puts("Error: request timed out.")
         false

@@ -61,7 +61,7 @@ module Droonga
         true
       rescue MissingRequiredParameter, InvalidCommandName, MissingCommandName
         puts(@options)
-        true
+        false
       rescue NoResponse
         puts("Error: request timed out.")
         false
