@@ -1,0 +1,97 @@
+#!/usr/bin/env ruby
+#
+# Copyright (C) 2015 Droonga Project
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License version 2.1 as published by the Free Software Foundation.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+require "json"
+
+require "droonga/command/base"
+
+module Droonga
+  module Command
+    class Add < Base
+      def run
+        parse_options do |option|
+          option.banner("Usage: droonga-add [options]\n" +
+                        "   ex: droonga-add --table User --name Adam --age 10\n" +
+                        "       droonga-add --table Server --value:host example.com")
+
+          option.on("table=",
+                    "Name of the target table.",
+                    :required => true)
+          option.on("key=",
+                    "A unique key for the added record.",
+                    :default => nil)
+        end
+
+        add_params = {
+          "table"  => @options[:table],
+          "key"    => @options[:key],
+          "values" => build_values(ARGV),
+        }
+        add_message = {
+          "dataset" => @options[:dataset],
+          "type" => "add",
+          "body" => add_params,
+        }
+
+        puts "Adding new record..."
+        puts(JSON.pretty_generate(add_params))
+
+        response = request(add_message)
+        raise NoResponse.new unless response
+
+        if response["body"]
+          puts "Done."
+          true
+        else
+          false
+        end
+      rescue MissingRequiredParameter
+        puts(@options)
+        false
+      rescue NoResponse
+        puts("Error: request timed out.")
+        false
+      end
+
+      private
+      def build_values(argv)
+        values = {}
+        column_name = nil
+        argv.each do |arg|
+          case arg
+          when /\A--value:([^\s=]+)=(.+)\z/
+            values[$1] = $2
+          when /\A--value:([^\s=]+)\z/
+            column_name = $1
+          when /\A--([^\s=]+)=(.+)\z/
+            values[$1] = $2
+          when /\A--([^\s=]+)\z/
+            column_name = $1
+          else
+            if column_name
+              values[column_name] = arg
+              column_name = nil
+            end
+          end
+        end
+        values
+      end
+    end
+  end
+end
+
+exit(Droonga::Command::Add.new.run)
