@@ -8,7 +8,8 @@
    You can unsubscribe subscription automatically with specified timeout, like:
    `client.subscribe(request, :subscription_timeout => 10)`
  * New utility commands are available as shorthand.
-   * `droonga-system-status`: sends `system.status` request to the cluster.
+   * `droonga-system-status`: allows you to send a `system.status` request to the cluster easily.
+   * `droonga-add`: allows you to send an `add` request to the cluster easily.
    * `droonga-groonga`: works like the `groonga` command.
  * droonga-send, droonga-request:
    * A new option `--[no-]completion` is introduced.
