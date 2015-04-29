@@ -50,6 +50,9 @@ module Droonga
           option.on("receiver-host=",
                     "Host name of this host.",
                     :default => Client::DEFAULT_HOST)
+          option.on("target-role=",
+                    "Role of engine nodes which should receive the message.",
+                    :default => Client::DEFAULT_TARGET_ROLE)
           option.on("timeout=",
                     "Time to terminate unresponsive connections (in seconds).",
                     :default => Client::DEFAULT_TIMEOUT_SECONDS)

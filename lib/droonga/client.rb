@@ -30,6 +30,7 @@ module Droonga
     DEFAULT_PORT = 10031
     DEFAULT_TAG  = "droonga"
     DEFAULT_DATASET = "Default"
+    DEFAULT_TARGET_ROLE = "any"
     DEFAULT_TIMEOUT_SECONDS = 3
 
     attr_writer :on_error
