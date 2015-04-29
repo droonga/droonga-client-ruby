@@ -17,6 +17,8 @@
      You should specify `--no-validation` to send invalid messages intentionally.
    * A new option `--default-dataset` is introduced.
      It is used for sending messages if they have no `dataset` field.
+   * A new option `--default-target-role` is introduced.
+     It is used for sending messages if they have no `targetRole` field.
    * The "date" field is filled with the format same to droonga-engine's internal one
      like "2015-04-08T06:16:20.571303Z".
 
