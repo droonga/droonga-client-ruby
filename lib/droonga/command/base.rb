@@ -48,13 +48,13 @@ module Droonga
                     "Dataset name for the sending message.",
                     :default => Client::DEFAULT_DATASET)
           option.on("receiver-host=",
-                    "Host name of this host.",
+                    "Host name of the computer you are running this command.",
                     :default => Client::DEFAULT_HOST)
           option.on("target-role=",
-                    "Role of engine nodes which should receive the message.",
+                    "Role of engine nodes which should process the message.",
                     :default => Client::DEFAULT_TARGET_ROLE)
           option.on("timeout=",
-                    "Time to terminate unresponsive connections (in seconds).",
+                    "Time to terminate unresponsive connections, in seconds.",
                     :default => Client::DEFAULT_TIMEOUT_SECONDS)
         end
         @options = options

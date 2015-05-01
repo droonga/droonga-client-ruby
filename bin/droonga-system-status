@@ -25,7 +25,7 @@ module Droonga
       def run
         parse_options do |option|
           option.on(:pretty,
-                    "Output result as a pretty print JSON.",
+                    "Output result as a pretty printed JSON.",
                     :default => false)
         end
 
