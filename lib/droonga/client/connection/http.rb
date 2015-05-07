@@ -174,12 +174,17 @@ module Droonga
 
         def build_path(message, parameters)
           type = message["type"]
-          base_path = message["path"] || "/#{type}"
+          base_path = message["path"] || build_droonga_path(type)
           if parameters.empty?
             base_path
           else
             "#{base_path}?#{Rack::Utils.build_nested_query(parameters)}"
           end
+        end
+
+        def build_droonga_path(type)
+          type = type.gsub(".", "/")
+          "/droonga/#{type}"
         end
 
         def on_error(error)
