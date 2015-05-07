@@ -153,11 +153,10 @@ module Droonga
         def close
         end
 
-        private
         def build_request(message)
           http_method = message["method"] || "GET"
           http_headers = message["headers"] || {}
-          case http_method
+          case http_method.to_s.upcase
           when "POST"
             request = Net::HTTP::Post.new(build_path(message, {}),
                                           http_headers)
@@ -172,6 +171,7 @@ module Droonga
           end
         end
 
+        private
         def build_path(message, parameters)
           type = message["type"]
           base_path = message["path"] || build_droonga_path(type)

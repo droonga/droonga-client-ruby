@@ -126,8 +126,21 @@ module Droonga
       @connection.close
     end
 
-    def complete(message)
-      do_completion(message, :completion => true)
+    def actual_request(message)
+      case @protocol
+      when :http
+        @connection.build_request(message)
+        http_request = client.build_request(request_message)
+        message = "HTTP #{http_request.method} #{http_request.path}"
+        if http_request.method == "POST"
+          message << "\n#{http_request.body}"
+        end
+        message
+      when :droonga
+        do_completion(message, :completion => true)
+      else
+        nil
+      end
     end
 
     private
