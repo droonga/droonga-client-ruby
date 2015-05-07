@@ -127,12 +127,12 @@ json_parser.on_parse_complete = lambda do |request_message|
     message = "Request: "
     case options[:protocol]
     when :droonga
-    request_message = client.complete(request_message)
-    begin
-      message << JSON.pretty_generate(request_message)
-    rescue
-      message << request_message.inspect
-    end
+      request_message = client.complete(request_message)
+      begin
+        message << JSON.pretty_generate(request_message)
+      rescue
+        message << request_message.inspect
+      end
     end
     message << "\n"
     print(message)
