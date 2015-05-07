@@ -49,18 +49,18 @@ def parse_server(server, options)
   if protocol and host =~ /\A[0-9]+\z/ and port.nil?
     # "host:port" case can be detected as "protocol:host" wrongly.
     port     = host
-    host     = protocol.downcase.to_sym
+    host     = protocol
     protocol = nil
   end
 
-  protocol ||= options.default_protocol
+  protocol ||= options.default_protocol.to_s
   port     ||= options.default_port
   tag      ||= options.default_tag
 
   {
     :host     => host,
     :port     => Integer(port),
-    :protocol => protocol,
+    :protocol => protocol.downcase.to_sym,
     :tag      => tag,
     :default_dataset => options.default_dataset,
     :default_target_role => options.default_target_role,
