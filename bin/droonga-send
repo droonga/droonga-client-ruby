@@ -171,7 +171,10 @@ parser.on("--[no-]validation",
 end
 request_json_files = parser.parse!(ARGV)
 
-servers << default_server if servers.empty?
+if servers.empty?
+  default_server = "#{options.default_protocol}:#{options.default_host}:#{options.default_port}/#{options.default_tag}"
+  servers << default_server
+end
 if messages_per_second > 0 and servers.size > 1
   messages_per_second = messages_per_second / servers.size
 end
