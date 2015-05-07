@@ -150,7 +150,7 @@ json_parser.on_parse_complete = lambda do |request_message|
     end
     message << "\n"
     print(message)
-    client.close if options[:exit_on_response]
+    break if options[:exit_on_response]
   end
   request.wait
 end
