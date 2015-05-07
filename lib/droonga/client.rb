@@ -126,16 +126,20 @@ module Droonga
       @connection.close
     end
 
-    def actual_request(message)
+    def complete(message)
       case @protocol
       when :http
-        @connection.build_request(message)
-        http_request = client.build_request(request_message)
-        message = "HTTP #{http_request.method} #{http_request.path}"
-        if http_request.method == "POST"
-          message << "\n#{http_request.body}"
+        http_request = @connection.build_request(message)
+        http_headers = {}
+        http_request.canonical_each do |name, value|
+          http_headers[name] = value
         end
-        message
+        {
+          "method"  => http_request.method,
+          "path"    => http_request.path,
+          "headers" => http_headers,
+          "body"    => http_request.body,
+        }
       when :droonga
         do_completion(message, :completion => true)
       else

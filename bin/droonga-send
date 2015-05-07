@@ -191,16 +191,11 @@ json_parser.on_parse_complete = lambda do |request_message|
   client = clients[client_index]
   if options.report_request
     message = "Request: "
-    case client.protocol
-    when :droonga
-      request_message = client.actual_request(request_message)
-      begin
-        message << JSON.pretty_generate(request_message)
-      rescue
-        message << request_message.inspect
-      end
-    when :http
-      message << client.actual_request(request_message)
+    request_message = client.complete(request_message)
+    begin
+      message << JSON.pretty_generate(request_message)
+    rescue
+      message << request_message.inspect
     end
     message << "\n"
     print(message)

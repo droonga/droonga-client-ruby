@@ -160,7 +160,11 @@ module Droonga
           when "POST"
             request = Net::HTTP::Post.new(build_path(message, {}),
                                           http_headers)
-            request.body = JSON.generate(message["body"])
+            body = message["body"]
+            if body.is_a?(Hash) or body.is_a?(Array)
+              body = JSON.generate(body)
+            end
+            request.body = body
             request
           when "GET"
             parameters = message["body"] || {}
