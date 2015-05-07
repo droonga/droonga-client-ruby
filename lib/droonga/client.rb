@@ -123,6 +123,10 @@ module Droonga
       @connection.close
     end
 
+    def complete(message)
+      do_completion(message, :completion => true)
+    end
+
     private
     def create_connection(options)
       case options[:protocol] || :droonga

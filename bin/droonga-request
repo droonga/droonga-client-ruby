@@ -130,6 +130,7 @@ json_parser = Yajl::Parser.new
 json_parser.on_parse_complete = lambda do |request_message|
   if options[:report_request]
     message = "Request: "
+    request_message = client.complete(request_message)
     begin
       message << JSON.pretty_generate(request_message)
     rescue
