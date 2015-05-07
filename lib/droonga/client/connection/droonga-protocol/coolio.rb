@@ -302,7 +302,7 @@ module Droonga
               port = @sender.peeraddr[1]
               detail = message
               error = ConnectionError.new(host, port, detail)
-              yield(error)
+              yield(error) if block_given?
             end
           end
 

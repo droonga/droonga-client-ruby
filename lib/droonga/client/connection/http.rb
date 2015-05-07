@@ -142,7 +142,7 @@ module Droonga
           request = build_request(message)
           http.start do
             http.request(request) do |response|
-              yield(response)
+              yield(response) if block_given?
             end
           end
         end
