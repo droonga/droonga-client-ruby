@@ -84,11 +84,6 @@ parser.on("--receiver-host=HOST",
           "(#{options[:receiver_host]})") do |host|
   options[:receiver_host] = host
 end
-parser.on("--receiver-port=PORT", Integer,
-          "Port number to be received a response from Droonga engine.",
-          "(#{options[:receiver_port]})") do |port|
-  options[:receiver_port] = port
-end
 parser.separator("")
 parser.separator("Report:")
 parser.on("--[no-]report-request",
