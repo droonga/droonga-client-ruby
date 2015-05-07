@@ -49,7 +49,7 @@ def parse_server(server, options)
   if protocol and host =~ /\A[0-9]+\z/ and port.nil?
     # "host:port" case can be detected as "protocol:host" wrongly.
     port     = host
-    host     = protocol
+    host     = protocol.downcase.to_sym
     protocol = nil
   end
 
@@ -60,7 +60,7 @@ def parse_server(server, options)
   {
     :host     => host,
     :port     => Integer(port),
-    :protocol => protocol.to_sym,
+    :protocol => protocol,
     :tag      => tag,
     :default_dataset => options.default_dataset,
     :default_target_role => options.default_target_role,
@@ -123,7 +123,7 @@ end
 parser.on("--default-protocol=PROTOCOL",
           "Default protocol to communicate with endpoints of the Droonga cluster.",
           "(#{options.default_protocol})") do |protocol|
-  options.default_protocol = protocol
+  options.default_protocol = protocol.downcase.to_sym
 end
 parser.on("--default-port=PORT", Integer,
           "Default port number to communicate with endpoints of the Droonga cluster.",
@@ -188,18 +188,21 @@ end
 client_index = 0
 json_parser = Yajl::Parser.new
 json_parser.on_parse_complete = lambda do |request_message|
+  client = clients[client_index]
   if options.report_request
     message = "Request: "
+    case client.protocol
+    when :droonga
     request_message = client.complete(request_message)
     begin
       message << JSON.pretty_generate(request_message)
     rescue
       message << request_message.inspect
     end
+    end
     message << "\n"
     print(message)
   end
-  client = clients[client_index]
   client.send(request_message)
   client_index = (client_index + 1) % clients.size
   throughput_reporter.on_message_sent if throughput_reporter
