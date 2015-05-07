@@ -87,16 +87,16 @@ module Droonga
             end
           else
             catch do |tag|
-            thread = Thread.new do
-              send(message, options) do |response|
-                begin
-                yield(response.body)
-                rescue LocalJumpError
-                  throw(tag)
+              thread = Thread.new do
+                send(message, options) do |response|
+                  begin
+                    yield(response.body)
+                  rescue LocalJumpError
+                    throw(tag)
+                  end
                 end
               end
-            end
-            Request.new(thread)
+              Request.new(thread)
             end
           end
         end
