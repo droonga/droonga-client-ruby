@@ -63,7 +63,7 @@ parser.on("--protocol=PROTOCOL", available_protocols,
           "Protocol to communicate with the endpoint of the Droonga cluster.",
           "[#{available_protocols.join('|')}]",
           "(#{options[:protocol]})") do |protocol|
-  options[:protocol] = protocol
+  options[:protocol] = protocol.to_sym
 end
 parser.separator("")
 parser.separator("Timeout:")
@@ -141,6 +141,9 @@ json_parser.on_parse_complete = lambda do |request_message|
       message << "Elapsed time: #{Time.now - start}\n"
     end
     begin
+      if options[:protocol] == :http
+        response = JSON.parse(response)
+      end
       message << JSON.pretty_generate(response)
     rescue
       message << response.inspect
