@@ -126,12 +126,12 @@ parser.on("--default-protocol=PROTOCOL",
   options.default_protocol = protocol
 end
 parser.on("--default-port=PORT", Integer,
-          "Default port for servers.",
+          "Default port number to communicate with the engine.",
           "(#{options.default_port})") do |port|
   options.default_port = port
 end
 parser.on("--default-tag=TAG",
-          "Default tag for servers.",
+          "Default tag name to communicate with the engine.",
           "(#{options.default_tag})") do |tag|
   options.default_tag = tag
 end
@@ -150,12 +150,12 @@ end
 parser.separator("")
 parser.separator("Messages:")
 parser.on("--default-dataset=NAME",
-          "Default dataset name for sending messages.",
+          "Default dataset name for the sending message.",
           "(#{options.default_dataset})") do |name|
   options.default_dataset = name
 end
 parser.on("--default-target-role=ROLE",
-          "Default target role of engine nodes for sending messages.",
+          "Default role of engine nodes which should process the message.",
           "(#{options.default_target_role})") do |role|
   options.default_target_role = role
 end

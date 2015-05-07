@@ -44,17 +44,17 @@ parser.banner += " REQUEST_JSON_FILE"
 parser.separator("")
 parser.separator("Connect:")
 parser.on("--host=HOST",
-          "Host name to be connected.",
+          "Host name of the engine node.",
           "(#{options[:host]})") do |host|
   options[:host] = host
 end
 parser.on("--port=PORT", Integer,
-          "Port number to be connected.",
+          "Port number to communicate with the engine.",
           "(#{options[:port]})") do |port|
   options[:port] = port
 end
 parser.on("--tag=TAG",
-          "Tag name to be used to communicate with Droonga system.",
+          "Tag name to communicate with the engine.",
           "(#{options[:tag]})") do |tag|
   options[:tag] = tag
 end
@@ -68,7 +68,7 @@ end
 parser.separator("")
 parser.separator("Timeout:")
 parser.on("--timeout=TIMEOUT", Integer,
-          "Timeout for operations.",
+          "Time to terminate unresponsive connections, in seconds.",
           "(#{options[:timeout]})") do |timeout|
   options[:timeout] = timeout
 end
@@ -104,12 +104,12 @@ end
 parser.separator("")
 parser.separator("Messages:")
 parser.on("--detault-dataset=NAME",
-          "Default dataset name for sending messages.",
+          "Default dataset name for the sending message.",
           "(#{options[:default_dataset]})") do |name|
   options[:default_dataset] = name
 end
 parser.on("--detault-target-role=ROLE",
-          "Default target role of engine nodes for sending messages.",
+          "Default role of engine nodes which should process the message.",
           "(#{options[:default_target_role]})") do |role|
   options[:default_target_role] = role
 end
