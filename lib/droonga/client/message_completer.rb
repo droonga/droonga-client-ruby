@@ -23,6 +23,7 @@ module Droonga
       def initialize(options={})
         @options = options
         @fixed_date = @options[:fixed_date]
+        @default_dataset = @options[:default_dataset]
         @default_timeout = @options[:default_timeout]
         @default_target_role = @options[:default_target_role]
       end
@@ -30,13 +31,16 @@ module Droonga
       def complete(message)
         id   = message["id"] || generate_id
         date = message["date"] || @fixed_date || new_date
+        dataset = message["dataset"] || @default_dataset
         if not have_timeout?(message) and @default_timeout
           message["timeout"] = @default_timeout
         end
         if not message["targetRole"].nil? and @default_target_role
           message["targetRole"] = @default_target_role
         end
-        message.merge("id" => id, "date" => date)
+        message.merge("id"      => id,
+                      "date"    => date,
+                      "dataset" => dataset)
       end
 
       private
