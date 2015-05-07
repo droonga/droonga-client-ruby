@@ -44,23 +44,23 @@ parser.banner += " REQUEST_JSON_FILE"
 parser.separator("")
 parser.separator("Connect:")
 parser.on("--host=HOST",
-          "Host name of the engine node.",
+          "Host name of the endpoint to communicate with the Droonga cluster.",
           "(#{options[:host]})") do |host|
   options[:host] = host
 end
 parser.on("--port=PORT", Integer,
-          "Port number to communicate with the engine.",
+          "Port number to communicate with the endpoint of the Droonga cluster.",
           "(#{options[:port]})") do |port|
   options[:port] = port
 end
 parser.on("--tag=TAG",
-          "Tag name to communicate with the engine.",
+          "Tag name to communicate with the endpoint of the Droonga cluster.",
           "(#{options[:tag]})") do |tag|
   options[:tag] = tag
 end
 available_protocols = [:droonga, :http]
 parser.on("--protocol=PROTOCOL", available_protocols,
-          "Protocol to be used to communicate with Droonga system.",
+          "Protocol to communicate with the endpoint of the Droonga cluster.",
           "[#{available_protocols.join('|')}]",
           "(#{options[:protocol]})") do |protocol|
   options[:protocol] = protocol
@@ -80,7 +80,7 @@ end
 parser.separator("")
 parser.separator("Droonga protocol:")
 parser.on("--receiver-host=HOST",
-          "Host name to be received a response from Droonga engine.",
+          "Host name of the computer you are running this command.",
           "(#{options[:receiver_host]})") do |host|
   options[:receiver_host] = host
 end
@@ -92,34 +92,34 @@ end
 parser.separator("")
 parser.separator("Report:")
 parser.on("--[no-]report-request",
-          "Reports request message.",
+          "Reports request messages actually sent.",
           "(#{options[:report_request]})") do |report_request|
   options[:report_request] = report_request
 end
 parser.on("--[no-]report-elapsed-time",
-          "Reports elapsed time.",
+          "Reports elapsed time between a request and a response.",
           "(#{options[:report_elapsed_time]})") do |report_elapsed_time|
   options[:report_elapsed_time] = report_elapsed_time
 end
 parser.separator("")
 parser.separator("Messages:")
 parser.on("--detault-dataset=NAME",
-          "Default dataset name for the sending message.",
+          "Default dataset name for sending messages.",
           "(#{options[:default_dataset]})") do |name|
   options[:default_dataset] = name
 end
 parser.on("--detault-target-role=ROLE",
-          "Default role of engine nodes which should process the message.",
+          "Default role of engine nodes which should process messages.",
           "(#{options[:default_target_role]})") do |role|
   options[:default_target_role] = role
 end
 parser.on("--[no-]completion",
-          "Do completion of required fields for input message or not.",
+          "Do completion of required fields for input messages or not.",
           "(#{options[:completion]})") do |completion|
   options[:completion] = completion
 end
 parser.on("--[no-]validation",
-          "Do validation for input message or not.",
+          "Do validation for input messages or not.",
           "(#{options[:validation]})") do |validation|
   options[:validation] = validation
 end

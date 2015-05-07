@@ -115,57 +115,57 @@ parser.on("--server=PROTOCOL:HOST:PORT/TAG",
   servers << server
 end
 parser.on("--messages-per-second=N", Integer,
-          "Apply rate limitation by N messages/second.",
-          "'#{Droonga::Client::RateLimiter::NO_LIMIT}' means no limit.",
+          "Maximum number of messages to be sent in a second.",
+          "'#{Droonga::Client::RateLimiter::NO_LIMIT}' means \"no limit\".",
           "(#{messages_per_second})") do |n|
   messages_per_second = n
 end
 parser.on("--default-protocol=PROTOCOL",
-          "Default protocol for servers.",
+          "Default protocol to communicate with endpoints of the Droonga cluster.",
           "(#{options.default_protocol})") do |protocol|
   options.default_protocol = protocol
 end
 parser.on("--default-port=PORT", Integer,
-          "Default port number to communicate with the engine.",
+          "Default port number to communicate with endpoints of the Droonga cluster.",
           "(#{options.default_port})") do |port|
   options.default_port = port
 end
 parser.on("--default-tag=TAG",
-          "Default tag name to communicate with the engine.",
+          "Default tag name to communicate with the endpoints of the Droonga cluster.",
           "(#{options.default_tag})") do |tag|
   options.default_tag = tag
 end
 parser.separator("")
 parser.separator("Report:")
 parser.on("--[no-]report-request",
-          "Reports request message.",
+          "Reports request messages.",
           "(#{options.report_request})") do |report_request|
   options.report_request = report_request
 end
-parser.on("--report-throughput",
+parser.on("--[no-]report-throughput",
           "Reports throughput by messages per second.",
-          "(no)") do
+          "(#{options.report_throughput})") do
   options.report_throughput = true
 end
 parser.separator("")
 parser.separator("Messages:")
 parser.on("--default-dataset=NAME",
-          "Default dataset name for the sending message.",
+          "Default dataset name for sending messages.",
           "(#{options.default_dataset})") do |name|
   options.default_dataset = name
 end
 parser.on("--default-target-role=ROLE",
-          "Default role of engine nodes which should process the message.",
+          "Default role of engine nodes which should process messages.",
           "(#{options.default_target_role})") do |role|
   options.default_target_role = role
 end
 parser.on("--[no-]completion",
-          "Do completion of required fields for input message or not.",
+          "Do completion of required fields for input messages or not.",
           "(#{options.completion})") do |completion|
   options.completion = completion
 end
 parser.on("--[no-]validation",
-          "Do validation for input message or not.",
+          "Do validation for input messages or not.",
           "(#{options.validation})") do |validation|
   options.validation = validation
 end
