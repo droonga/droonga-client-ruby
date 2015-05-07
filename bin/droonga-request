@@ -73,7 +73,7 @@ parser.on("--timeout=TIMEOUT", Integer,
   options[:timeout] = timeout
 end
 parser.on("--[no-]exit-on-response",
-          "Exit when just one response is received.",
+          "Exits when just one response is received.",
           "(#{options[:exit_on_response]})") do |exit_on_response|
   options[:exit_on_response] = exit_on_response
 end
