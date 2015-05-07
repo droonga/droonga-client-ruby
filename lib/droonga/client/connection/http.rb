@@ -86,8 +86,8 @@ module Droonga
               response.body
             end
           else
-            catch do |tag|
-              thread = Thread.new do
+            thread = Thread.new do
+              catch do |tag|
                 send(message, options) do |response|
                   begin
                     yield(response.body)
@@ -96,8 +96,8 @@ module Droonga
                   end
                 end
               end
-              Request.new(thread)
             end
+            Request.new(thread)
           end
         end
 
