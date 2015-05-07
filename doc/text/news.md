@@ -1,5 +1,9 @@
 # News
 
+## 0.2.2: 2015-05-29
+
+ * `droonga-request` works correctly with HTTP protocol. (regression)
+
 ## 0.2.1: 2015-04-29
 
  * Required fields of input messages are automatically completed by default.
