@@ -25,7 +25,7 @@ require "droonga/client"
 options = OpenStruct.new
 options.report_request = false
 options.report_throughput = false
-options.default_protocol = "droonga"
+options.default_protocol = Droonga::Client::DEFAULT_PROTOCOL
 options.default_host     = Droonga::Client::DEFAULT_HOST
 options.default_port     = Droonga::Client::DEFAULT_PORT
 options.default_tag      = Droonga::Client::DEFAULT_TAG

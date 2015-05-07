@@ -25,6 +25,7 @@ require "droonga/client/message_validator"
 
 module Droonga
   class Client
+    DEFAULT_PROTOCOL = :droonga
     DEFAULT_HOST = Socket.gethostname
     DEFAULT_HOST.force_encoding("US-ASCII") if DEFAULT_HOST.ascii_only?
     DEFAULT_PORT = 10031
@@ -34,6 +35,7 @@ module Droonga
     DEFAULT_TIMEOUT_SECONDS = 3
 
     attr_writer :on_error
+    attr_reader :protocol
 
     class ConnectionError < StandardError
       def initialize(error)
@@ -83,6 +85,7 @@ module Droonga
     # @option options [Boolean] :validation (true)
     #   Do or do not validate input messages.
     def initialize(options={})
+      @protocol = options[:protocol] || DEFAULT_PROTOCOL
       @connection = create_connection(options)
       @connection.on_error = lambda do |error|
         on_error(ConnectionError.new(error))
@@ -129,7 +132,7 @@ module Droonga
 
     private
     def create_connection(options)
-      case options[:protocol] || :droonga
+      case @protocol
       when :http
         Connection::HTTP.new(options)
       when :droonga
