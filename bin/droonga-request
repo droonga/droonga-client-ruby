@@ -29,7 +29,6 @@ options = {
   :protocol            => Droonga::Client::DEFAULT_PROTOCOL,
   :default_target_role => Droonga::Client::DEFAULT_TARGET_ROLE,
   :timeout             => 1,
-  :exit_on_response    => true,
   :receiver_host       => Droonga::Client::DEFAULT_HOST,
   :receiver_port       => 0,
   :report_request      => false,
@@ -71,11 +70,6 @@ parser.on("--timeout=TIMEOUT", Integer,
           "Time to terminate unresponsive connections, in seconds.",
           "(#{options[:timeout]})") do |timeout|
   options[:timeout] = timeout
-end
-parser.on("--[no-]exit-on-response",
-          "Exits when just one response is received.",
-          "(#{options[:exit_on_response]})") do |exit_on_response|
-  options[:exit_on_response] = exit_on_response
 end
 parser.separator("")
 parser.separator("Droonga protocol:")
@@ -150,7 +144,7 @@ json_parser.on_parse_complete = lambda do |request_message|
     end
     message << "\n"
     print(message)
-    break if options[:exit_on_response]
+    break
   end
   request.wait
 end
