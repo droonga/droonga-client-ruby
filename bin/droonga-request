@@ -130,20 +130,20 @@ json_parser.on_parse_complete = lambda do |request_message|
   end
   start = Time.now
   response = client.request(request_message)
-    message = ""
-    if options[:report_elapsed_time]
-      message << "Elapsed time: #{Time.now - start}\n"
+  message = ""
+  if options[:report_elapsed_time]
+    message << "Elapsed time: #{Time.now - start}\n"
+  end
+  begin
+    if options[:protocol] == :http
+      response = JSON.parse(response)
     end
-    begin
-      if options[:protocol] == :http
-        response = JSON.parse(response)
-      end
-      message << JSON.pretty_generate(response)
-    rescue
-      message << response.inspect
-    end
-    message << "\n"
-    print(message)
+    message << JSON.pretty_generate(response)
+  rescue
+    message << response.inspect
+  end
+  message << "\n"
+  print(message)
 end
 
 if request_json_files.empty?
