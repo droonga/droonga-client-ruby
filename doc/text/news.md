@@ -2,7 +2,9 @@
 
 ## 0.2.2: 2015-05-29
 
- * `droonga-request` works correctly with HTTP protocol. (regression)
+ * `droonga-request`
+   * Works correctly with HTTP protocol. (regression)
+   * The `--[no-]exit-on-response` option is removed because it is nonsense.
 
 ## 0.2.1: 2015-04-29
 
