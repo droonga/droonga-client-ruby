@@ -129,7 +129,7 @@ json_parser.on_parse_complete = lambda do |request_message|
     print(message)
   end
   start = Time.now
-  request = client.request(request_message) do |response|
+  response = client.request(request_message)
     message = ""
     if options[:report_elapsed_time]
       message << "Elapsed time: #{Time.now - start}\n"
@@ -144,9 +144,6 @@ json_parser.on_parse_complete = lambda do |request_message|
     end
     message << "\n"
     print(message)
-    break
-  end
-  request.wait
 end
 
 if request_json_files.empty?
