@@ -29,15 +29,19 @@ module Droonga
                     :default => false)
         end
 
-        response = request("dataset" => @options[:dataset],
-                           "type"    => "system.status")
-        raise NoResponse.new unless response
-        body = response["body"]
+        system_status_message = {
+          "dataset" => @options[:dataset],
+          "type"    => "system.status",
+        }
+        request(system_status_message) do |response|
+          raise NoResponse.new unless response
+          body = response["body"]
 
-        if @options[:pretty]
-          puts(JSON.pretty_generate(body))
-        else
-          puts(JSON.generate(body))
+          if @options[:pretty]
+            puts(JSON.pretty_generate(body))
+          else
+            puts(JSON.generate(body))
+          end
         end
 
         true

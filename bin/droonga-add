@@ -52,10 +52,12 @@ module Droonga
         puts "Adding new record..."
         puts(JSON.pretty_generate(add_params))
 
-        response = request(add_message)
-        raise NoResponse.new unless response
+        result = request(add_message) do |response|
+          raise NoResponse.new unless response
+          response["body"]
+        end
 
-        if response["body"]
+        if result
           puts "Done."
           true
         else
