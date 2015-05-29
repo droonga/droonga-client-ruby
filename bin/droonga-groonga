@@ -68,14 +68,14 @@ module Droonga
       private
       def process_groonga_message(groonga_message)
         request(groonga_message) do |response|
-        raise NoResponse.new unless response
-        body = response["body"]
+          raise NoResponse.new unless response
+          body = response["body"]
 
-        if @options[:pretty]
-          puts(JSON.pretty_generate(body))
-        else
-          puts(JSON.generate(body))
-        end
+          if @options[:pretty]
+            puts(JSON.pretty_generate(body))
+          else
+            puts(JSON.generate(body))
+          end
         end
       end
 
