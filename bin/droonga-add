@@ -27,7 +27,7 @@ module Droonga
           option.banner("Usage: droonga-add [options]\n" +
                         "   ex: droonga-add --table User --name Adam --age 10\n" +
                         "       droonga-add --table Server --value:host example.com\n" +
-                        "       (You can specify column value expressly with the prefix \"value:\".)\n"
+                        "       (You can specify column value expressly with the prefix \"value:\".)\n" +
                         "")
 
           option.on("table=",
