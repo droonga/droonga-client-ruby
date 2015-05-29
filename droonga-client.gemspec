@@ -37,7 +37,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "droonga-message-pack-packer"
   spec.add_runtime_dependency "fluent-logger"
-  spec.add_runtime_dependency "grn2drn"
+  spec.add_runtime_dependency "grn2drn", ">= 1.0.5"
   spec.add_runtime_dependency "msgpack"
   spec.add_runtime_dependency "rack"
   spec.add_runtime_dependency "slop", "<= 3.6.0"
