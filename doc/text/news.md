@@ -5,6 +5,9 @@
  * `droonga-request`
    * Works correctly with HTTP protocol. (regression)
    * The `--[no-]exit-on-response` option is removed because it is nonsense.
+ * Add `--dry-run` option for `droonga-add`, `droonga-system-status` and `droonga-groonga` commands.
+   You can try them without sending messages.
+ * `droonga-groonga` now supports conversion of multiple Groonga commands given via the standard input.
 
 ## 0.2.1: 2015-04-29
 
