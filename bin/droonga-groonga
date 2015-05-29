@@ -85,7 +85,7 @@ module Droonga
 
       def create_command_converter
         convert_options = {
-          :id_prefix => "droonga-groonga:",
+          :id_prefix => "droonga-groonga:#{Time.now.to_i.to_s}",
           :dataset   => @options[:dataset],
         }
         ::Grn2Drn::CommandConverter.new(convert_options)
