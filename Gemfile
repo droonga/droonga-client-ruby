@@ -1,6 +1,6 @@
 # -*- mode: ruby; coding: utf-8 -*-
 #
-# Copyright (C) 2013 Droonga Project
+# Copyright (C) 2013-2015 Droonga Project
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,3 +19,11 @@ source 'https://rubygems.org'
 
 # Specify your gem's dependencies in droonga-client.gemspec
 gemspec
+
+parent_dir = File.join(File.dirname(__FILE__), "..")
+grn2drn_dir = File.join(parent_dir, "grn2drn")
+if File.exist?(grn2drn_dir)
+  gem "grn2drn", :path => grn2drn_dir
+else
+  gem "grn2drn", :github => "droonga/grn2drn"
+end
