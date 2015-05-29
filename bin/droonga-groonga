@@ -18,6 +18,7 @@
 require "json"
 
 require "droonga/command/base"
+require "grn2drn/command-converter"
 
 module Droonga
   module Command
@@ -33,20 +34,52 @@ module Droonga
           option.banner("Usage: droonga-groonga [groonga-command-name] [options]\n" +
                         "   ex: droonga-groonga select --table=Users")
 
+          option.on(:"dry-run",
+                    "Only reports messages converted from Groonga to Droonga.",
+                    :default => false)
+
           option.separator("Formatting:")
           option.on(:pretty,
                     "Output result as a pretty print JSON.",
                     :default => false)
         end
 
-        @command = ARGV.shift
-        assert_valid_command
+        unless ARGV.empty?
+          groonga_command_args = ARGV.collect do |arg|
+            if /\s/ =~ arg
+              JSON.generate(arg)
+            else
+              arg
+            end
+          end
+          command_converter.convert(groonga_command_args.join(" ")) do |command|
+            process_groonga_message(command)
+          end
+        else
+          command_converter.convert(ARGF) do |command|
+            process_groonga_message(command)
+          end
+        end
 
-        groonga_message = {
-          "dataset" => @options[:dataset],
-          "type" => @command,
-          "body" => build_params(ARGV),
-        }
+        true
+      rescue MissingRequiredParameter
+        puts(@options)
+        false
+      rescue NoResponse
+        puts("Error: request timed out.")
+        false
+      end
+
+      private
+      def process_groonga_message(groonga_message)
+        if @options[:"dry-run"]
+          if @options[:pretty]
+            puts(JSON.pretty_generate(groonga_message))
+          else
+            puts(JSON.generate(groonga_message))
+          end
+          return
+        end
 
         response = request(groonga_message)
         raise NoResponse.new unless response
@@ -57,39 +90,18 @@ module Droonga
         else
           puts(JSON.generate(body))
         end
-
-        true
-      rescue MissingRequiredParameter, InvalidCommandName, MissingCommandName
-        puts(@options)
-        false
-      rescue NoResponse
-        puts("Error: request timed out.")
-        false
       end
 
-      private
-      def assert_valid_command
-        raise InvalidCommandName.new(@command) if /\A--.+\z/ =~ @command
-        raise MissingCommandName.new if @command.nil?
+      def command_converter
+        @command_converter ||= create_command_converter
       end
 
-      def build_params(argv)
-        params = {}
-        option_name = nil
-        argv.each do |arg|
-          case arg
-          when /\A--([^\s=]+)=(.+)\z/
-            params[$1] = $2
-          when /\A--([^\s=]+)\z/
-            option_name = $1
-          else
-            if option_name
-              params[option_name] = arg
-              option_name = nil
-            end
-          end
-        end
-        params
+      def create_command_converter
+        convert_options = {
+          :id_prefix => "droonga-groonga:",
+          :dataset   => @options[:dataset],
+        }
+        ::Grn2Drn::CommandConverter.new(convert_options)
       end
     end
   end
