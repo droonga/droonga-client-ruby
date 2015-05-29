@@ -33,6 +33,10 @@ module Droonga
         options = Slop.parse(:help => true) do |option|
           yield(option) if block_given?
 
+          option.on(:"dry-run",
+                    "Only reports messages to be sent to the engine.",
+                    :default => false)
+
           option.separator("Connections:")
           option.on(:host=,
                     "Host name of the engine node.",
@@ -63,12 +67,21 @@ module Droonga
         raise MissingRequiredParameter.new
       end
 
-      def request(message)
+      def request(message, &block)
+        if @options[:"dry-run"]
+          if @options[:pretty]
+            puts(JSON.pretty_generate(message))
+          else
+            puts(JSON.generate(message))
+          end
+          return nil
+        end
+
         response = nil
         open do |client|
           response = client.request(message)
         end
-        response
+        yield response
       end
 
       def send(message)
