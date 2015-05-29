@@ -33,11 +33,6 @@ module Droonga
         parse_options do |option|
           option.banner("Usage: droonga-groonga [groonga-command-name] [options]\n" +
                         "   ex: droonga-groonga select --table=Users")
-
-          option.on(:"dry-run",
-                    "Only reports messages converted from Groonga to Droonga.",
-                    :default => false)
-
           option.separator("Formatting:")
           option.on(:pretty,
                     "Output result as a pretty print JSON.",
@@ -72,16 +67,7 @@ module Droonga
 
       private
       def process_groonga_message(groonga_message)
-        if @options[:"dry-run"]
-          if @options[:pretty]
-            puts(JSON.pretty_generate(groonga_message))
-          else
-            puts(JSON.generate(groonga_message))
-          end
-          return
-        end
-
-        response = request(groonga_message)
+        request(groonga_message) do |response|
         raise NoResponse.new unless response
         body = response["body"]
 
@@ -89,6 +75,7 @@ module Droonga
           puts(JSON.pretty_generate(body))
         else
           puts(JSON.generate(body))
+        end
         end
       end
 
